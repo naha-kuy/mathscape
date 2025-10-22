@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Uji Geometri 3D</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Main Menu Page -->
+        <div id="menu-page" class="page active">
+            <header class="menu-header">
+                <div class="icon-left">🏠</div>
+                <h1>MENU</h1>
+                <button class="logout-btn">Logout</button>
+            </header>
+            <main class="menu-content">
+                <div class="nav-buttons">
+                    <button class="nav-btn" data-page="peta-konstruksi">
+                        <div class="btn-icon">🗺️</div>
+                        <div class="btn-text">Peta Konstruksi</div>
+                    </button>
+                    <button class="nav-btn" data-page="lahan-syarat">
+                        <div class="btn-icon">📋</div>
+                        <div class="btn-text">Lahan Syarat</div>
+                    </button>
+                    <button class="nav-btn" data-page="petunjuk-konstruksi">
+                        <div class="btn-icon">📖</div>
+                        <div class="btn-text">Petunjuk Konstruksi</div>
+                    </button>
+                    <button class="nav-btn" data-page="lahan-bermain">
+                        <div class="btn-icon">🎮</div>
+                        <div class="btn-text">Lahan Bermain</div>
+                    </button>
+                </div>
+            </main>
+        </div>
+
+        <!-- Peta Konstruksi Page -->
+        <div id="peta-konstruksi-page" class="page">
+            <nav class="nav-bar">
+                <button class="back-btn" data-page="menu">←</button>
+                <h2>PETA KONSTRUKSI</h2>
+            </nav>
+            <main class="content">
+                <div class="text-box">
+                    <h3 class="text-box-header">🎯 TUJUAN PEMBELAJARAN</h3>
+                    <ol>
+                        <li>Memahami konsep dasar geometri dalam pembelajaran matematika.</li>
+                        <li>Mengidentifikasi bentuk-bentuk geometri pada bangun ruang 3D.</li>
+                        <li>Menerapkan konsep geometri dalam perhitungan luas, keliling, dan volume.</li>
+                        <li>Mengembangkan kemampuan pemecahan masalah melalui simulasi interaktif.</li>
+                        <li>Menghargai pentingnya geometri dalam kehidupan sehari-hari.</li>
+                    </ol>
+                </div>
+                <div class="text-box">
+                    <h3 class="text-box-header">📚 KOMPETENSI DASAR</h3>
+                    <div class="competency">
+                        <div class="sub-point">
+                            <span class="badge green">KD 3.1</span>
+                            Mengidentifikasi sifat-sifat bangun datar dan ruang.
+                        </div>
+                        <div class="sub-point">
+                            <span class="badge green">KD 3.2</span>
+                            Menghitung luas dan keliling bangun datar serta volume dan luas permukaan bangun ruang.
+                        </div>
+                        <div class="sub-point">
+                            <span class="badge green">KD 4.1</span>
+                            Menyelesaikan masalah yang berkaitan dengan bangun datar dan ruang.
+                        </div>
+                    </div>
+                </div>
+                <div class="text-box">
+                    <h3 class="text-box-header">🏆 INDIKATOR PENCAPAIAN</h3>
+                    <div class="indicators">
+                        <div class="indicator">
+                            <strong>Kognitif:</strong> Siswa dapat mengidentifikasi dan menghitung elemen geometri pada bangun ruang 3D.
+                        </div>
+                        <div class="indicator">
+                            <strong>Afektif:</strong> Siswa menunjukkan apresiasi terhadap pentingnya geometri dalam kehidupan sehari-hari.
+                        </div>
+                        <div class="indicator">
+                            <strong>Psikomotorik:</strong> Siswa dapat menyusun komponen konstruksi secara akurat menggunakan prinsip geometri.
+                        </div>
+                    </div>
+                </div>
+                <button class="next-btn blue" data-page="lahan-syarat">LANJUT KE TES PRASYARAT →</button>
+            </main>
+        </div>
+
+        <!-- Lahan Syarat Page -->
+        <div id="lahan-syarat-page" class="page">
+            <nav class="nav-bar">
+                <button class="back-btn" data-page="peta-konstruksi">←</button>
+                <h2>LAHAN SYARAT</h2>
+            </nav>
+            <main class="content">
+                <div class="progress-bar">
+                    <span id="progress-text">Soal 1 dari 5</span>
+                    <div class="progress">
+                        <div class="progress-fill" id="progress-fill" style="width: 20%;"></div>
+                    </div>
+                </div>
+                <div id="question-container">
+                    <!-- Questions will be loaded here -->
+                </div>
+                <div id="feedback-container" style="display: none;">
+                    <!-- Feedback will be shown here -->
+                </div>
+                <button id="next-btn" class="next-btn" style="display: none;">SOAL BERIKUTNYA →</button>
+            </main>
+        </div>
+
+        <!-- Lahan Bermain Page -->
+        <div id="lahan-bermain-page" class="page">
+            <nav class="nav-bar">
+                <button class="back-btn" data-page="menu">←</button>
+                <h2>LAHAN BERMAIN</h2>
+            </nav>
+            <main class="content">
+                <div class="game-intro">
+                    <div class="game-icon">🎯</div>
+                    <p>Tantang pemahaman geometri Balok dengan 6 level interaktif</p>
+                </div>
+                <div class="text-box">
+                    <h3 class="text-box-header">🎮 CARA BERMAIN</h3>
+                    <ul>
+                        <li><span class="icon">🎯</span> <strong>Target Elemen:</strong> Setiap level meminta Anda menemukan elemen geometri tertentu pada Balok 3D.</li>
+                        <li><span class="icon">👆</span> <strong>Drag & Drop:</strong> Seret kartu unsur dari toolbox ke elemen Balok yang benar.</li>
+                        <li><span class="icon">💡</span> <strong>Petunjuk:</strong> Gunakan tombol petunjuk maksimal 2 kali per level untuk melihat target yang berkedip.</li>
+                        <li><span class="icon">📊</span> <strong>Skor Akurasi:</strong> Raih skor 100% dengan meminimalkan kesalahan dan penggunaan petunjuk.</li>
+                        <li><span class="icon">🔓</span> <strong>Level Terpisah:</strong> Selesaikan level sebelumnya untuk membuka level berikutnya.</li>
+                    </ul>
+                </div>
+                <button class="start-btn green" id="start-construction-btn">🎯 PILIH LEVEL</button>
+            </main>
+        </div>
+
+        <!-- Level Selection Hub -->
+        <div id="level-selection-page" class="page">
+            <nav class="nav-bar">
+                <button class="back-btn" data-page="lahan-bermain">←</button>
+                <h2>PEMILIHAN LEVEL</h2>
+            </nav>
+            <main class="content">
+                <div class="level-grid" id="level-grid">
+                    <!-- Level cards will be generated here -->
+                </div>
+            </main>
+        </div>
+
+        <!-- Game Level Page -->
+        <div id="game-level-page" class="page">
+            <nav class="nav-bar">
+                <button class="back-btn" id="level-back-btn" data-page="level-selection">←</button>
+                <h2 id="level-title">LEVEL 1</h2>
+            </nav>
+            <main class="content">
+                <div class="level-info">
+                    <div class="mission-card">
+                        <h3 id="mission-title">MISI LEVEL</h3>
+                        <p id="mission-description">Temukan semua titik sudut pada lantai Balok</p>
+                    </div>
+                    <div class="stats-panel">
+                        <div class="stat-item">
+                            <span class="stat-label">Akurasi:</span>
+                            <span class="stat-value" id="accuracy-stat">0/0 (0%)</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Petunjuk:</span>
+                            <span class="stat-value" id="hints-stat">0/2</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Waktu:</span>
+                            <span class="stat-value" id="time-stat">00:00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-play-area">
+                    <div class="game-toolbox">
+                        <h3 id="toolbox-title">TOOLBOX</h3>
+                        <div class="game-components" id="game-components">
+                            <!-- Game component cards will be generated here -->
+                        </div>
+                        <div class="game-controls">
+                            <button class="hint-btn" id="hint-btn" aria-label="Gunakan petunjuk (tersisa 2 kali)">💡 PETUNJUK (0/2)</button>
+                        </div>
+                    </div>
+                    <div class="game-canvas-container">
+                        <canvas id="game-threejs-canvas"></canvas>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Level Complete Overlay -->
+        <div id="level-complete-overlay" class="overlay hidden">
+            <div class="overlay-content">
+                <div class="completion-header">
+                    <div class="completion-icon">🎉</div>
+                    <h2 id="completion-title">LEVEL 1 SELESAI!</h2>
+                </div>
+                <div class="completion-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Skor Akurasi:</span>
+                        <span class="stat-value" id="final-accuracy">100%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Waktu Penyelesaian:</span>
+                        <span class="stat-value" id="completion-time">02:30</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Petunjuk Digunakan:</span>
+                        <span class="stat-value" id="hints-used">0/2</span>
+                    </div>
+                </div>
+                <div class="completion-buttons">
+                    <button class="completion-btn secondary" id="play-again-btn">🔄 MAIN LAGI</button>
+                    <button class="completion-btn primary" id="next-level-btn">▶ LANJUT LEVEL</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Petunjuk Konstruksi Page -->
+        <div id="petunjuk-konstruksi-page" class="page">
+            <nav class="nav-bar">
+                <button class="back-btn" data-page="menu">←</button>
+                <h2>PETUNJUK KONSTRUKSI</h2>
+            </nav>
+            <main class="content">
+                <div class="petunjuk-container">
+                    <div class="checkbox-panel">
+                        <div class="category">
+                            <div class="category-header" data-category="rusuk-titik">
+                                <span class="toggle-icon">▶</span>
+                                Rusuk & Titik Sudut
+                            </div>
+                            <div class="category-content">
+                                <div class="subcategory">
+                                    <h4>Titik Sudut</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="point" data-id="A"> A</label>
+                                        <label><input type="checkbox" data-type="point" data-id="B"> B</label>
+                                        <label><input type="checkbox" data-type="point" data-id="C"> C</label>
+                                        <label><input type="checkbox" data-type="point" data-id="D"> D</label>
+                                        <label><input type="checkbox" data-type="point" data-id="E"> E</label>
+                                        <label><input type="checkbox" data-type="point" data-id="F"> F</label>
+                                        <label><input type="checkbox" data-type="point" data-id="G"> G</label>
+                                        <label><input type="checkbox" data-type="point" data-id="H"> H</label>
+                                    </div>
+                                </div>
+                                <div class="subcategory">
+                                    <h4>Rusuk</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="edge" data-id="AB"> AB</label>
+                                        <label><input type="checkbox" data-type="edge" data-id="BC"> BC</label>
+                                        <label><input type="checkbox" data-type="edge" data-id="CD"> CD</label>
+                                        <label><input type="checkbox" data-type="edge" data-id="DA"> DA</label>
+                                        <label><input type="checkbox" data-type="edge" data-id="EF"> EF</label>
+                                        <label><input type="checkbox" data-type="edge" data-id="FG"> FG</label>
+                                        <label><input type="checkbox" data-type="edge" data-id="GH"> GH</label>
+                                        <label><input type="checkbox" data-type="edge" data-id="HE"> HE</label>
+                                        <label><input type="checkbox" data-type="edge" data-id="AE"> AE</label>
+                                        <label><input type="checkbox" data-type="edge" data-id="BF"> BF</label>
+                                        <label><input type="checkbox" data-type="edge" data-id="CG"> CG</label>
+                                        <label><input type="checkbox" data-type="edge" data-id="DH"> DH</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="category">
+                            <div class="category-header" data-category="bidang">
+                                <span class="toggle-icon">▶</span>
+                                Bidang (Sisi)
+                            </div>
+                            <div class="category-content">
+                                <div class="subcategory">
+                                    <h4>Sisi Alas</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="face" data-id="ABCD"> ABCD</label>
+                                    </div>
+                                </div>
+                                <div class="subcategory">
+                                    <h4>Sisi Atas</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="face" data-id="EFGH"> EFGH</label>
+                                    </div>
+                                </div>
+                                <div class="subcategory">
+                                    <h4>Sisi Depan</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="face" data-id="ABFE"> ABFE</label>
+                                    </div>
+                                </div>
+                                <div class="subcategory">
+                                    <h4>Sisi Belakang</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="face" data-id="DCGH"> DCGH</label>
+                                    </div>
+                                </div>
+                                <div class="subcategory">
+                                    <h4>Sisi Kiri</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="face" data-id="ADHE"> ADHE</label>
+                                    </div>
+                                </div>
+                                <div class="subcategory">
+                                    <h4>Sisi Kanan</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="face" data-id="BCGF"> BCGF</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="category">
+                            <div class="category-header" data-category="diagonal-bidang">
+                                <span class="toggle-icon">▶</span>
+                                Diagonal Bidang
+                            </div>
+                            <div class="category-content">
+                                <div class="subcategory">
+                                    <h4>Diagonal Bidang Alas</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="face-diagonal" data-id="AC"> AC</label>
+                                        <label><input type="checkbox" data-type="face-diagonal" data-id="BD"> BD</label>
+                                    </div>
+                                </div>
+                                <div class="subcategory">
+                                    <h4>Diagonal Bidang Atas</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="face-diagonal" data-id="EG"> EG</label>
+                                        <label><input type="checkbox" data-type="face-diagonal" data-id="FH"> FH</label>
+                                    </div>
+                                </div>
+                                <div class="subcategory">
+                                    <h4>Diagonal Bidang Depan</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="face-diagonal" data-id="AF"> AF</label>
+                                        <label><input type="checkbox" data-type="face-diagonal" data-id="BE"> BE</label>
+                                    </div>
+                                </div>
+                                <div class="subcategory">
+                                    <h4>Diagonal Bidang Belakang</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="face-diagonal" data-id="CH"> CH</label>
+                                        <label><input type="checkbox" data-type="face-diagonal" data-id="DG"> DG</label>
+                                    </div>
+                                </div>
+                                <div class="subcategory">
+                                    <h4>Diagonal Bidang Kiri</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="face-diagonal" data-id="AH"> AH</label>
+                                        <label><input type="checkbox" data-type="face-diagonal" data-id="DE"> DE</label>
+                                    </div>
+                                </div>
+                                <div class="subcategory">
+                                    <h4>Diagonal Bidang Kanan</h4>
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="face-diagonal" data-id="BG"> BG</label>
+                                        <label><input type="checkbox" data-type="face-diagonal" data-id="CF"> CF</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="category">
+                            <div class="category-header" data-category="diagonal-ruang">
+                                <span class="toggle-icon">▶</span>
+                                Diagonal Ruang
+                            </div>
+                            <div class="category-content">
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="space-diagonal" data-id="AG"> AG</label>
+                                    <label><input type="checkbox" data-type="space-diagonal" data-id="BH"> BH</label>
+                                    <label><input type="checkbox" data-type="space-diagonal" data-id="CE"> CE</label>
+                                    <label><input type="checkbox" data-type="space-diagonal" data-id="DF"> DF</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="canvas-container">
+                        <button id="display-mode-btn" class="display-mode-btn">👁️</button>
+                        <canvas id="threejs-canvas"></canvas>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="app.js"></script>
+    <script src="pages/menu.js"></script>
+    <script src="pages/peta-konstruksi.js"></script>
+    <script src="pages/lahan-syarat.js"></script>
+    <script src="pages/petunjuk-konstruksi.js"></script>
+    <script src="pages/lahan-bermain.js"></script>
+    <script src="pages/level-selection.js"></script>
+    <script src="pages/game-level.js"></script>
+</body>
+</html>
