@@ -3,6 +3,8 @@ window.app = {
     currentPage: null,
 
     init: function() {
+        console.log('App initializing...');
+
         // Hide all pages initially
         document.querySelectorAll('.page').forEach(page => {
             page.classList.remove('active');
@@ -13,6 +15,8 @@ window.app = {
 
         // Setup navigation after DOM is ready
         this.setupNavigation();
+
+        console.log('App initialized');
     },
 
     setupNavigation: function() {
@@ -23,6 +27,19 @@ window.app = {
                 const btn = e.target.closest('.nav-btn');
                 const pageId = btn.getAttribute('data-page');
                 if (pageId) {
+                    // Special handling for separate HTML files
+                    if (pageId === 'petunjuk-konstruksi') {
+                        window.location.href = 'petunjuk-konstruksi.html';
+                        return;
+                    }
+                    if (pageId === 'lahan-syarat') {
+                        window.location.href = 'lahan-syarat.html';
+                        return;
+                    }
+                    if (pageId === 'lahan-bermain') {
+                        window.location.href = 'lahan-bermain.html';
+                        return;
+                    }
                     this.showPage(pageId);
                 }
             }
@@ -53,6 +70,8 @@ window.app = {
     },
 
     showPage: function(pageId) {
+        console.log('Showing page:', pageId);
+
         // Clean up current page
         if (this.currentPage) {
             this.cleanupPage(this.currentPage);
@@ -67,6 +86,9 @@ window.app = {
         const targetPage = document.getElementById(pageId + '-page');
         if (targetPage) {
             targetPage.classList.add('active');
+            console.log('Page element found and activated:', pageId);
+        } else {
+            console.error('Page element not found:', pageId + '-page');
         }
 
         // Initialize new page
@@ -77,8 +99,12 @@ window.app = {
     initPage: function(pageId) {
         // Call the appropriate page controller init function
         const controllerName = pageId.replace(/-/g, '') + 'Page'; // Convert kebab-case to camelCase
+        console.log('Initializing page controller:', controllerName);
         if (window[controllerName] && typeof window[controllerName].init === 'function') {
             window[controllerName].init();
+            console.log('Page controller initialized:', controllerName);
+        } else {
+            console.error('Page controller not found or init function missing:', controllerName);
         }
     },
 

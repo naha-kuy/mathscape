@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petunjuk Konstruksi - Game Uji Geometri 3D</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="three.min.js"></script>
+    <script src="OrbitControls.js"></script>
+    <style>
+        /* Enhanced styles for petunjuk konstruksi with natural & playful theme */
+        .standalone-petunjuk {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--color-base-creme) 0%, #e8f5e8 100%);
+            padding: 20px;
+            font-family: 'Poppins', 'Quicksand', Arial, sans-serif;
+        }
+
+        .standalone-petunjuk .petunjuk-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px var(--color-shadow);
+            border: 2px solid var(--color-border-light);
+        }
+
+        .standalone-petunjuk .petunjuk-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--color-text-dark);
+        }
+
+        .standalone-petunjuk .petunjuk-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--color-primary-green), var(--color-secondary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .standalone-petunjuk .petunjuk-subtitle {
+            font-size: 1.2rem;
+            color: var(--color-text-light);
+            margin-bottom: 20px;
+        }
+
+        .standalone-petunjuk .back-to-main {
+            display: inline-block;
+            background: var(--color-primary-green);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px var(--color-shadow);
+        }
+
+        .standalone-petunjuk .back-to-main:hover {
+            background: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .standalone-petunjuk .petunjuk-description {
+            background: var(--color-base-creme);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--color-primary-green);
+            box-shadow: 0 4px 8px var(--color-shadow);
+            border: 1px solid var(--color-border-light);
+        }
+
+        .standalone-petunjuk .petunjuk-description h3 {
+            color: var(--color-primary-green);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .standalone-petunjuk .petunjuk-description ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .standalone-petunjuk .petunjuk-description li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--color-border-light);
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .standalone-petunjuk .petunjuk-description li:hover {
+            background-color: rgba(76, 175, 80, 0.05);
+            border-radius: 8px;
+            padding-left: 10px;
+            margin-left: -10px;
+            margin-right: -10px;
+        }
+
+        .standalone-petunjuk .petunjuk-description li:last-child {
+            border-bottom: none;
+        }
+
+        .standalone-petunjuk .petunjuk-description .icon {
+            margin-right: 15px;
+            color: var(--color-accent-orange);
+            font-size: 1.3rem;
+            min-width: 25px;
+        }
+
+        /* Enhanced category styling */
+        .standalone-petunjuk .category-header {
+            background: var(--color-primary-green) !important;
+            color: white !important;
+            border-radius: 12px !important;
+            padding: 12px 18px !important;
+            margin-bottom: 8px !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 2px 6px var(--color-shadow) !important;
+        }
+
+        .standalone-petunjuk .category-header:hover {
+            background: #388E3C !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important;
+        }
+
+        .standalone-petunjuk .category-content {
+            background: var(--color-base-creme) !important;
+            border-radius: 0 0 12px 12px !important;
+            border: 1px solid var(--color-border-light) !important;
+            border-top: none !important;
+        }
+
+        .standalone-petunjuk .subcategory h4 {
+            color: var(--color-primary-green) !important;
+            font-size: 15px !important;
+            font-weight: 600 !important;
+            margin-bottom: 8px !important;
+        }
+
+        .standalone-petunjuk .checkboxes label {
+            transition: all 0.2s ease !important;
+            padding: 5px 8px !important;
+            border-radius: 6px !important;
+        }
+
+        .standalone-petunjuk .checkboxes label:hover {
+            background-color: rgba(76, 175, 80, 0.1) !important;
+        }
+
+        /* Enhanced display mode button */
+        .standalone-petunjuk .display-mode-btn {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 2px solid var(--color-primary-green) !important;
+            border-radius: 10px !important;
+            padding: 10px 15px !important;
+            font-weight: 600 !important;
+            color: var(--color-primary-green) !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 2px 6px var(--color-shadow) !important;
+        }
+
+        .standalone-petunjuk .display-mode-btn:hover {
+            background: var(--color-primary-green) !important;
+            color: white !important;
+            transform: scale(1.05) !important;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important;
+        }
+
+        @media (max-width: 768px) {
+            .standalone-petunjuk {
+                padding: 15px;
+            }
+
+            .standalone-petunjuk .petunjuk-container {
+                padding: 20px;
+            }
+
+            .standalone-petunjuk .petunjuk-title {
+                font-size: 2rem;
+            }
+
+            .standalone-petunjuk .petunjuk-container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .standalone-petunjuk .checkbox-panel {
+                max-width: none;
+                order: 2;
+                margin-top: 20px;
+            }
+
+            .standalone-petunjuk .canvas-container {
+                order: 1;
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="standalone-petunjuk">
+        <div class="petunjuk-container">
+            <div class="petunjuk-header">
+                <a href="index.html" class="back-to-main">← Kembali ke Menu Utama</a>
+                <h1 class="petunjuk-title">Petunjuk Konstruksi</h1>
+                <p class="petunjuk-subtitle">Pelajari Elemen-Elemen Geometri Balok 3D</p>
+            </div>
+
+            <div class="petunjuk-description">
+                <h3>🎯 Panduan Interaktif Petunjuk Konstruksi</h3>
+                <ul>
+                    <li><span class="icon">📋</span> <strong>Pilih Elemen:</strong> Klik checkbox pada panel kiri untuk menampilkan elemen geometri balok 3D</li>
+                    <li><span class="icon">👁️</span> <strong>Mode Tampilan:</strong> Gunakan tombol mode tampilan untuk mengubah cara melihat objek</li>
+                    <li><span class="icon">🖱️</span> <strong>Kontrol Kamera:</strong> Klik dan geser mouse untuk memutar objek, gunakan scroll untuk zoom</li>
+                    <li><span class="icon">📚</span> <strong>Eksplorasi:</strong> Klik header kategori untuk melihat berbagai komponen geometri</li>
+                </ul>
+            </div>
+
+            <div class="petunjuk-container">
+                <div class="canvas-container">
+                    <button id="display-mode-btn" class="display-mode-btn" title="Ubah Mode Tampilan">👁️ Mode Tampilan</button>
+                    <canvas id="threejs-canvas"></canvas>
+                </div>
+                <div class="checkbox-panel">
+                    <div class="category">
+                        <div class="category-header" data-category="rusuk-titik">
+                            <span class="toggle-icon">▶</span>
+                            📐 Rusuk & Titik Sudut
+                        </div>
+                        <div class="category-content">
+                            <div class="subcategory">
+                                <h4>Titik Sudut</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="point" data-id="A"> A</label>
+                                    <label><input type="checkbox" data-type="point" data-id="B"> B</label>
+                                    <label><input type="checkbox" data-type="point" data-id="C"> C</label>
+                                    <label><input type="checkbox" data-type="point" data-id="D"> D</label>
+                                    <label><input type="checkbox" data-type="point" data-id="E"> E</label>
+                                    <label><input type="checkbox" data-type="point" data-id="F"> F</label>
+                                    <label><input type="checkbox" data-type="point" data-id="G"> G</label>
+                                    <label><input type="checkbox" data-type="point" data-id="H"> H</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Rusuk</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="edge" data-id="AB"> AB</label>
+                                    <label><input type="checkbox" data-type="edge" data-id="BC"> BC</label>
+                                    <label><input type="checkbox" data-type="edge" data-id="CD"> CD</label>
+                                    <label><input type="checkbox" data-type="edge" data-id="DA"> DA</label>
+                                    <label><input type="checkbox" data-type="edge" data-id="EF"> EF</label>
+                                    <label><input type="checkbox" data-type="edge" data-id="FG"> FG</label>
+                                    <label><input type="checkbox" data-type="edge" data-id="GH"> GH</label>
+                                    <label><input type="checkbox" data-type="edge" data-id="HE"> HE</label>
+                                    <label><input type="checkbox" data-type="edge" data-id="AE"> AE</label>
+                                    <label><input type="checkbox" data-type="edge" data-id="BF"> BF</label>
+                                    <label><input type="checkbox" data-type="edge" data-id="CG"> CG</label>
+                                    <label><input type="checkbox" data-type="edge" data-id="DH"> DH</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="category">
+                        <div class="category-header" data-category="bidang">
+                            <span class="toggle-icon">▶</span>
+                            🔲 Bidang (Sisi)
+                        </div>
+                        <div class="category-content">
+                            <div class="subcategory">
+                                <h4>Sisi Alas</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face" data-id="ABCD"> ABCD</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Sisi Atas</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face" data-id="EFGH"> EFGH</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Sisi Depan</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face" data-id="ABFE"> ABFE</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Sisi Belakang</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face" data-id="DCGH"> DCGH</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Sisi Kiri</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face" data-id="ADHE"> ADHE</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Sisi Kanan</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face" data-id="BCGF"> BCGF</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="category">
+                        <div class="category-header" data-category="diagonal-bidang">
+                            <span class="toggle-icon">▶</span>
+                            🔄 Diagonal Bidang
+                        </div>
+                        <div class="category-content">
+                            <div class="subcategory">
+                                <h4>Diagonal Bidang Alas</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face-diagonal" data-id="AC"> AC</label>
+                                    <label><input type="checkbox" data-type="face-diagonal" data-id="BD"> BD</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Diagonal Bidang Atas</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face-diagonal" data-id="EG"> EG</label>
+                                    <label><input type="checkbox" data-type="face-diagonal" data-id="FH"> FH</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Diagonal Bidang Depan</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face-diagonal" data-id="AF"> AF</label>
+                                    <label><input type="checkbox" data-type="face-diagonal" data-id="BE"> BE</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Diagonal Bidang Belakang</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face-diagonal" data-id="CH"> CH</label>
+                                    <label><input type="checkbox" data-type="face-diagonal" data-id="DG"> DG</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Diagonal Bidang Kiri</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face-diagonal" data-id="AH"> AH</label>
+                                    <label><input type="checkbox" data-type="face-diagonal" data-id="DE"> DE</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Diagonal Bidang Kanan</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face-diagonal" data-id="BG"> BG</label>
+                                    <label><input type="checkbox" data-type="face-diagonal" data-id="CF"> CF</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Bidang Diagonal DHFB</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face" data-id="DHFB"> DHFB</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Bidang Diagonal EDCF</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face" data-id="EDCF"> EDCF</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Bidang Diagonal EACG</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face" data-id="EACG"> EACG</label>
+                                </div>
+                            </div>
+                            <div class="subcategory">
+                                <h4>Bidang Diagonal HABG</h4>
+                                <div class="checkboxes">
+                                    <label><input type="checkbox" data-type="face" data-id="HABG"> HABG</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="category">
+                        <div class="category-header" data-category="diagonal-ruang">
+                            <span class="toggle-icon">▶</span>
+                            🌌 Diagonal Ruang
+                        </div>
+                        <div class="category-content">
+                            <div class="checkboxes">
+                                <label><input type="checkbox" data-type="space-diagonal" data-id="AG"> AG</label>
+                                <label><input type="checkbox" data-type="space-diagonal" data-id="BH"> BH</label>
+                                <label><input type="checkbox" data-type="space-diagonal" data-id="CE"> CE</label>
+                                <label><input type="checkbox" data-type="space-diagonal" data-id="DF"> DF</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="pages/shared-three.js"></script>
+    <script>
+        // Petunjuk Konstruksi functionality (adapted from original)
+        let balokGroup = null;
+        let points = {};
+        let edges = {};
+        let faces = {};
+        let faceDiagonals = {};
+        let spaceDiagonals = {};
+        let pointLabels = {};
+        let displayMode = 'default';
+        let scene, camera, renderer, controls;
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initPetunjukKonstruksi();
+        });
+
+        function initPetunjukKonstruksi() {
+            console.log('Initializing Petunjuk Konstruksi...');
+
+            // Initialize Three.js scene using shared manager
+            const sceneData = window.threeJSManager.initScene('threejs-canvas');
+            if (!sceneData) {
+                console.error('Failed to initialize Three.js scene');
+                return;
+            }
+
+            // Store references
+            scene = sceneData.scene;
+            camera = sceneData.camera;
+            renderer = sceneData.renderer;
+            controls = sceneData.controls;
+
+            // Create Balok
+            createBalok();
+
+            // Setup UI
+            setupCheckboxListeners();
+            setupCollapsibleCategories();
+            setupDisplayModeToggle();
+
+            console.log('Petunjuk Konstruksi initialized successfully');
+        }
+
+        function createBalok() {
+            console.log('Creating Balok 3D model...');
+            balokGroup = new THREE.Group();
+            scene.add(balokGroup);
+
+            // Define vertices (A-H)
+            const vertices = {
+                A: new THREE.Vector3(-1, -1, -1),
+                B: new THREE.Vector3(1, -1, -1),
+                C: new THREE.Vector3(1, -1, 1),
+                D: new THREE.Vector3(-1, -1, 1),
+                E: new THREE.Vector3(-1, 1, -1),
+                F: new THREE.Vector3(1, 1, -1),
+                G: new THREE.Vector3(1, 1, 1),
+                H: new THREE.Vector3(-1, 1, 1)
+            };
+
+            // Create points, edges, faces, and diagonals
+            createPoints(vertices);
+            createEdges(vertices);
+            createFaces(vertices);
+            createFaceDiagonals(vertices);
+            createSpaceDiagonals(vertices);
+
+            console.log('Balok 3D model created successfully');
+        }
+
+        function createPoints(vertices) {
+            Object.keys(vertices).forEach(key => {
+                const geometry = new THREE.SphereGeometry(0.05, 8, 8);
+                const material = new THREE.MeshBasicMaterial({ color: 0x444444 });
+                const point = new THREE.Mesh(geometry, material);
+                point.position.copy(vertices[key]);
+                point.userData.id = key;
+                point.userData.type = 'point';
+                point.userData.defaultColor = 0x444444;
+                point.userData.highlightColor = 0xffff00;
+                point.renderOrder = 2;
+                balokGroup.add(point);
+                points[key] = point;
+
+                // Create label sprite
+                const canvas = document.createElement('canvas');
+                canvas.width = 128;
+                canvas.height = 128;
+                const context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.font = 'bold 72px Arial';
+                context.fillStyle = '#ffff00';
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+                context.fillText(key, canvas.width / 2, canvas.height / 2);
+
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.needsUpdate = true;
+                const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
+                const sprite = new THREE.Sprite(spriteMaterial);
+                sprite.position.copy(vertices[key]);
+                sprite.position.y += 0.18;
+                sprite.scale.set(0.3, 0.3, 1);
+                sprite.userData.id = key;
+                sprite.userData.type = 'point-label';
+                sprite.visible = false;
+                sprite.renderOrder = 4;
+                balokGroup.add(sprite);
+                pointLabels[key] = sprite;
+            });
+        }
+
+        function createEdges(vertices) {
+            const edgePairs = [
+                ['A', 'B'], ['B', 'C'], ['C', 'D'], ['D', 'A'],
+                ['E', 'F'], ['F', 'G'], ['G', 'H'], ['H', 'E'],
+                ['A', 'E'], ['B', 'F'], ['C', 'G'], ['D', 'H']
+            ];
+
+            edgePairs.forEach(([start, end]) => {
+                const geometry = new THREE.BufferGeometry().setFromPoints([vertices[start], vertices[end]]);
+                const material = new THREE.LineBasicMaterial({ color: 0x444444 });
+                const edge = new THREE.Line(geometry, material);
+                edge.userData.id = start + end;
+                edge.userData.type = 'edge';
+                edge.userData.defaultColor = 0x444444;
+                edge.userData.highlightColor = 0xff0000;
+                edge.renderOrder = 2;
+                balokGroup.add(edge);
+                edges[start + end] = edge;
+            });
+        }
+
+        function createFaces(vertices) {
+            const faceDefinitions = [
+                { id: 'ABCD', vertices: ['A', 'B', 'C', 'D'], color: 0xcccccc },
+                { id: 'EFGH', vertices: ['E', 'F', 'G', 'H'], color: 0xcccccc },
+                { id: 'ABFE', vertices: ['A', 'B', 'F', 'E'], color: 0xdddddd },
+                { id: 'DCGH', vertices: ['D', 'C', 'G', 'H'], color: 0xdddddd },
+                { id: 'ADHE', vertices: ['A', 'D', 'H', 'E'], color: 0xeeeeee },
+                { id: 'BCGF', vertices: ['B', 'C', 'G', 'F'], color: 0xeeeeee },
+                // Diagonal faces
+                { id: 'DHFB', vertices: ['D', 'H', 'F', 'B'], color: 0xcccccc },
+                { id: 'EDCF', vertices: ['E', 'D', 'C', 'F'], color: 0xcccccc },
+                { id: 'EACG', vertices: ['E', 'A', 'C', 'G'], color: 0xcccccc },
+                { id: 'HABG', vertices: ['H', 'A', 'B', 'G'], color: 0xcccccc }
+            ];
+
+            faceDefinitions.forEach(faceDef => {
+                const geometry = new THREE.BufferGeometry();
+                const positions = [];
+                faceDef.vertices.forEach(v => positions.push(vertices[v].x, vertices[v].y, vertices[v].z));
+                geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+                geometry.setIndex([0, 1, 2, 0, 2, 3]);
+                geometry.computeVertexNormals && geometry.computeVertexNormals();
+
+                const material = new THREE.MeshBasicMaterial({
+                    color: faceDef.color || 0x444444,
+                    transparent: true,
+                    opacity: 0.1,
+                    side: THREE.DoubleSide,
+                    depthWrite: false
+                });
+                const face = new THREE.Mesh(geometry, material);
+                face.userData.id = faceDef.id;
+                face.userData.type = 'face';
+                face.userData.defaultColor = material.color.getHex();
+                face.userData.defaultOpacity = material.opacity;
+                face.userData.highlightColor = 0x1e90ff;
+                face.userData.highlightOpacity = 0.4;
+                face.renderOrder = 1;
+                face.visible = false;
+                balokGroup.add(face);
+                faces[faceDef.id] = face;
+            });
+        }
+
+        function createFaceDiagonals(vertices) {
+            const faceDiagonalPairs = [
+                ['A', 'C'], ['B', 'D'], ['E', 'G'], ['F', 'H'],
+                ['A', 'F'], ['B', 'E'], ['D', 'G'], ['C', 'H'],
+                ['A', 'H'], ['D', 'E'], ['B', 'G'], ['C', 'F']
+            ];
+
+            faceDiagonalPairs.forEach(([start, end]) => {
+                const geometry = new THREE.BufferGeometry().setFromPoints([vertices[start], vertices[end]]);
+                const material = new THREE.LineBasicMaterial({ color: 0x444444, transparent: true, opacity: 1.0 });
+                const diagonal = new THREE.Line(geometry, material);
+                diagonal.userData.id = start + end;
+                diagonal.userData.type = 'face-diagonal';
+                diagonal.userData.defaultColor = 0x444444;
+                diagonal.userData.highlightColor = 0x00ffff;
+                diagonal.userData.highlightOpacity = 0.4;
+                diagonal.renderOrder = 2;
+                diagonal.visible = false;
+                balokGroup.add(diagonal);
+                faceDiagonals[start + end] = diagonal;
+            });
+        }
+
+        function createSpaceDiagonals(vertices) {
+            const spaceDiagonalPairs = [['A', 'G'], ['B', 'H'], ['C', 'E'], ['D', 'F']];
+
+            spaceDiagonalPairs.forEach(([start, end]) => {
+                if (!vertices[start] || !vertices[end]) return;
+                const geometry = new THREE.BufferGeometry().setFromPoints([vertices[start], vertices[end]]);
+                const material = new THREE.LineBasicMaterial({ color: 0x444444 });
+                const diagonal = new THREE.Line(geometry, material);
+                diagonal.userData.id = start + end;
+                diagonal.userData.type = 'space-diagonal';
+                diagonal.userData.defaultColor = 0x444444;
+                diagonal.userData.highlightColor = 0x9932cc;
+                diagonal.renderOrder = 2;
+                diagonal.visible = true;
+                balokGroup.add(diagonal);
+                spaceDiagonals[start + end] = diagonal;
+            });
+        }
+
+        function highlightElement(type, id, highlight) {
+            let element;
+            switch (type) {
+                case 'point': element = points[id]; break;
+                case 'edge': element = edges[id]; break;
+                case 'face': element = faces[id]; break;
+                case 'face-diagonal': element = faceDiagonals[id]; break;
+                case 'space-diagonal': element = spaceDiagonals[id]; break;
+                default: element = null;
+            }
+
+            if (!element) {
+                if (highlight) console.warn(`Element ${type}-${id} not found for highlighting`);
+                return;
+            }
+
+            const mat = element.material;
+            if (mat) {
+                if (highlight) {
+                    try {
+                        if (mat.color && typeof mat.color.setHex === 'function' && element.userData.highlightColor) {
+                            mat.color.setHex(element.userData.highlightColor);
+                        }
+                        if ((type === 'face' || type === 'face-diagonal') && typeof mat.transparent !== 'undefined') {
+                            mat.transparent = true;
+                            mat.opacity = element.userData.highlightOpacity || 0.6;
+                        }
+                    } catch (e) { /* ignore color set errors */ }
+                    element.visible = true;
+                } else {
+                    try {
+                        if (mat.color && typeof mat.color.setHex === 'function' && element.userData.defaultColor) {
+                            mat.color.setHex(element.userData.defaultColor);
+                        }
+                        if (type === 'face' && typeof mat.transparent !== 'undefined') {
+                            mat.opacity = element.userData.defaultOpacity || 0.1;
+                            element.visible = (displayMode !== 'checked-only') ? false : false;
+                        }
+                        if (type === 'face-diagonal') {
+                            mat.opacity = 1.0;
+                            element.visible = false;
+                        }
+                    } catch (e) { /* ignore */ }
+                    if (displayMode === 'checked-only') element.visible = false;
+                }
+            } else {
+                element.visible = !!highlight;
+            }
+
+            if (type === 'point') {
+                const label = pointLabels[id];
+                if (label) label.visible = !!highlight;
+            }
+        }
+
+        function updateVisibility() {
+            const allElements = [
+                ...Object.values(points), ...Object.values(edges),
+                ...Object.values(faces), ...Object.values(faceDiagonals),
+                ...Object.values(spaceDiagonals)
+            ].filter(Boolean);
+
+            if (displayMode === 'default') {
+                allElements.forEach(element => {
+                    const t = element.userData && element.userData.type;
+                    if (t === 'point' || t === 'edge' || t === 'space-diagonal') {
+                        element.visible = true;
+                        if (element.material && element.userData && element.userData.defaultColor) {
+                            try { element.material.color.setHex(element.userData.defaultColor); } catch (e) {}
+                        }
+                    } else if (t === 'face' || t === 'face-diagonal') {
+                        element.visible = false;
+                    }
+                });
+            } else if (displayMode === 'checked-only') {
+                allElements.forEach(element => element.visible = false);
+            }
+
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => {
+                const type = checkbox.getAttribute('data-type');
+                const id = checkbox.getAttribute('data-id');
+                highlightElement(type, id, true);
+            });
+
+            updatePointLabelVisibility();
+        }
+
+        function updatePointLabelVisibility() {
+            const checkedElements = new Set();
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+
+            checkboxes.forEach(checkbox => {
+                const type = checkbox.getAttribute('data-type');
+                const id = checkbox.getAttribute('data-id');
+                if (type && id) checkedElements.add(`${type}-${id}`);
+            });
+
+            const pointConnections = {
+                A: ['point-A', 'edge-AB', 'edge-AD', 'edge-AE', 'face-ABCD', 'face-ABFE', 'face-ADHE', 'face-diagonal-AC', 'face-diagonal-AF', 'face-diagonal-AH', 'space-diagonal-AG'],
+                B: ['point-B', 'edge-AB', 'edge-BC', 'edge-BF', 'face-ABCD', 'face-ABFE', 'face-BCGF', 'face-diagonal-BD', 'face-diagonal-BE', 'face-diagonal-BG', 'space-diagonal-BH'],
+                C: ['point-C', 'edge-BC', 'edge-CD', 'edge-CG', 'face-ABCD', 'face-DCGH', 'face-BCGF', 'face-diagonal-AC', 'face-diagonal-CH', 'face-diagonal-CF', 'space-diagonal-CE'],
+                D: ['point-D', 'edge-CD', 'edge-DA', 'edge-DH', 'face-ABCD', 'face-DCGH', 'face-ADHE', 'face-diagonal-BD', 'face-diagonal-DG', 'face-diagonal-DE', 'space-diagonal-DF'],
+                E: ['point-E', 'edge-EF', 'edge-EH', 'edge-EA', 'face-EFGH', 'face-ABFE', 'face-ADHE', 'face-diagonal-EG', 'face-diagonal-BE', 'face-diagonal-DE', 'space-diagonal-CE'],
+                F: ['point-F', 'edge-EF', 'edge-FG', 'edge-FB', 'face-EFGH', 'face-ABFE', 'face-BCGF', 'face-diagonal-FH', 'face-diagonal-AF', 'face-diagonal-CF', 'space-diagonal-DF'],
+                G: ['point-G', 'edge-FG', 'edge-GH', 'edge-GC', 'face-EFGH', 'face-DCGH', 'face-BCGF', 'face-diagonal-EG', 'face-diagonal-FH', 'face-diagonal-BG', 'face-diagonal-CH', 'face-diagonal-DG', 'space-diagonal-AG'],
+                H: ['point-H', 'edge-GH', 'edge-HE', 'edge-HD', 'face-EFGH', 'face-DCGH', 'face-ADHE', 'face-diagonal-FH', 'face-diagonal-AH', 'face-diagonal-DE', 'space-diagonal-BH']
+            };
+
+            Object.keys(pointLabels).forEach(pointId => {
+                const label = pointLabels[pointId];
+                const connections = pointConnections[pointId] || [];
+                const hasConnectedCheckedElement = connections.some(conn => checkedElements.has(conn));
+                label.visible = hasConnectedCheckedElement;
+            });
+        }
+
+        function setupCheckboxListeners() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const type = e.target.getAttribute('data-type');
+                    const id = e.target.getAttribute('data-id');
+                    highlightElement(type, id, e.target.checked);
+                    updatePointLabelVisibility();
+                });
+            });
+        }
+
+        function setupDisplayModeToggle() {
+            const displayModeBtn = document.getElementById('display-mode-btn');
+            if (displayModeBtn) {
+                displayModeBtn.addEventListener('click', () => {
+                    displayMode = displayMode === 'default' ? 'checked-only' : 'default';
+                    updateVisibility();
+                });
+            }
+        }
+
+        function setupCollapsibleCategories() {
+            const container = document.querySelector('.petunjuk-container');
+            if (!container) {
+                console.error('Petunjuk Konstruksi container not found');
+                return;
+            }
+
+            container.addEventListener('click', (e) => {
+                const header = e.target.closest('.category-header');
+                if (!header) return;
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                const category = header.parentElement;
+                const isExpanded = category.classList.contains('expanded');
+
+                if (isExpanded) {
+                    category.classList.remove('expanded');
+                    header.classList.remove('expanded');
+                    header.classList.add('collapsed');
+                } else {
+                    category.classList.add('expanded');
+                    header.classList.remove('collapsed');
+                    header.classList.add('expanded');
+                }
+            });
+
+            console.log('Collapsible categories setup with event delegation');
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            window.threeJSManager._onResize('threejs-canvas');
+        });
+    </script>
+</body>
+</html>

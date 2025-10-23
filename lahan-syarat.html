@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lahan Syarat - Game Uji Geometri 3D</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Enhanced styles for lahan syarat with natural & playful theme */
+        .standalone-lahan-syarat {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--color-base-creme) 0%, #e8f5e8 100%);
+            padding: 20px;
+            font-family: 'Poppins', 'Quicksand', Arial, sans-serif;
+        }
+
+        .standalone-lahan-syarat .lahan-syarat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px var(--color-shadow);
+            border: 2px solid var(--color-border-light);
+        }
+
+        .standalone-lahan-syarat .lahan-syarat-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--color-text-dark);
+        }
+
+        .standalone-lahan-syarat .lahan-syarat-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--color-primary-green), var(--color-secondary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .standalone-lahan-syarat .lahan-syarat-subtitle {
+            font-size: 1.2rem;
+            color: var(--color-text-light);
+            margin-bottom: 20px;
+        }
+
+        .standalone-lahan-syarat .back-to-main {
+            display: inline-block;
+            background: var(--color-primary-green);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px var(--color-shadow);
+        }
+
+        .standalone-lahan-syarat .back-to-main:hover {
+            background: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .standalone-lahan-syarat .progress-bar {
+            margin-bottom: 30px;
+        }
+
+        .standalone-lahan-syarat .question {
+            background: var(--color-base-creme);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px var(--color-shadow);
+            border: 1px solid var(--color-border-light);
+        }
+
+        .standalone-lahan-syarat .question p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--color-primary-green);
+            font-weight: 600;
+        }
+
+        .standalone-lahan-syarat .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .standalone-lahan-syarat .option {
+            background-color: white;
+            border: 2px solid var(--color-border-light);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 2px 4px var(--color-shadow);
+            text-align: center;
+        }
+
+        .standalone-lahan-syarat .option:hover {
+            background-color: var(--color-base-creme);
+            border-color: var(--color-accent-orange);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--color-shadow);
+        }
+
+        .standalone-lahan-syarat .option.correct {
+            background-color: var(--color-primary-green);
+            color: white;
+            border-color: var(--color-primary-green);
+            transform: scale(1.02);
+        }
+
+        .standalone-lahan-syarat .option.incorrect {
+            background-color: var(--color-error-red);
+            color: white;
+            border-color: var(--color-error-red);
+        }
+
+        .standalone-lahan-syarat .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            border: 2px solid transparent;
+        }
+
+        .standalone-lahan-syarat .feedback.correct {
+            background-color: #e8f5e8;
+            color: var(--color-primary-green);
+            border-color: var(--color-primary-green);
+        }
+
+        .standalone-lahan-syarat .feedback.incorrect {
+            background-color: #ffebee;
+            color: var(--color-error-red);
+            border-color: var(--color-error-red);
+        }
+
+        .standalone-lahan-syarat .results {
+            text-align: center;
+            background: var(--color-base-creme);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 8px var(--color-shadow);
+            border: 1px solid var(--color-border-light);
+        }
+
+        .standalone-lahan-syarat .results h3 {
+            color: var(--color-primary-green);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .standalone-lahan-syarat .results p {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: var(--color-text-dark);
+        }
+
+        @media (max-width: 768px) {
+            .standalone-lahan-syarat {
+                padding: 15px;
+            }
+
+            .standalone-lahan-syarat .lahan-syarat-container {
+                padding: 20px;
+            }
+
+            .standalone-lahan-syarat .lahan-syarat-title {
+                font-size: 2rem;
+            }
+
+            .standalone-lahan-syarat .options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="standalone-lahan-syarat">
+        <div class="lahan-syarat-container">
+            <div class="lahan-syarat-header">
+                <a href="index.html" class="back-to-main">← Kembali ke Menu Utama</a>
+                <h1 class="lahan-syarat-title">Lahan Syarat</h1>
+                <p class="lahan-syarat-subtitle">Tes Prasyarat Geometri Dasar</p>
+            </div>
+
+            <div class="progress-bar">
+                <div id="progress-text">Soal 1 dari 5</div>
+                <div class="progress">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <div id="question-container">
+                <!-- Questions will be loaded here by JavaScript -->
+            </div>
+
+            <div id="feedback-container" style="display: none;">
+                <!-- Feedback will be shown here -->
+            </div>
+
+            <button id="next-btn" style="display: none;">SOAL BERIKUTNYA →</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="pages/lahan-syarat.js"></script>
+    <script>
+        // Initialize the lahan syarat page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.lahanSyaratPage) {
+                window.lahanSyaratPage.init();
+            } else {
+                console.error('Lahan Syarat page controller not found');
+            }
+        });
+    </script>
+</body>
+</html>

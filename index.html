@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Uji Geometri 3D</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="three.min.js"></script>
+    <script src="OrbitControls.js"></script>
 </head>
 <body>
     <div id="app">
@@ -231,42 +231,68 @@
                 <h2>PETUNJUK KONSTRUKSI</h2>
             </nav>
             <main class="content">
-                <div class="petunjuk-container">
-                    <div class="checkbox-panel">
+                <div class="petunjuk-description">
+                    <h3 style="color: var(--color-accent-orange);">🎯 Panduan Interaktif Petunjuk Konstruksi</h3>
+                    <div class="panduan-entries-container">
+                        <div class="panduan-entry-block">
+                            <h4 class="panduan-label">Pilih Elemen</h4>
+                            <p class="panduan-description">Klik checkbox pada panel kiri untuk menampilkan elemen geometri balok 3D</p>
+                        </div>
+
+                        <div class="panduan-entry-block">
+                            <h4 class="panduan-label">Mode Tampilan</h4>
+                            <p class="panduan-description">Gunakan tombol mode tampilan untuk mengubah cara melihat objek</p>
+                        </div>
+
+                        <div class="panduan-entry-block">
+                            <h4 class="panduan-label">Kontrol Kamera</h4>
+                            <p class="panduan-description">Klik dan geser mouse untuk memutar objek, gunakan scroll untuk zoom</p>
+                        </div>
+
+                        <div class="panduan-entry-block">
+                            <h4 class="panduan-label">Eksplorasi</h4>
+                            <p class="panduan-description">Klik header kategori untuk melihat berbagai komponen geometri</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkbox-panel">
+                    <div class="category-toggle-row">
                         <div class="category">
                             <div class="category-header" data-category="rusuk-titik">
                                 <span class="toggle-icon">▶</span>
-                                Rusuk & Titik Sudut
+                                📐 Rusuk & Titik Sudut
                             </div>
                             <div class="category-content">
-                                <div class="subcategory">
-                                    <h4>Titik Sudut</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="point" data-id="A"> A</label>
-                                        <label><input type="checkbox" data-type="point" data-id="B"> B</label>
-                                        <label><input type="checkbox" data-type="point" data-id="C"> C</label>
-                                        <label><input type="checkbox" data-type="point" data-id="D"> D</label>
-                                        <label><input type="checkbox" data-type="point" data-id="E"> E</label>
-                                        <label><input type="checkbox" data-type="point" data-id="F"> F</label>
-                                        <label><input type="checkbox" data-type="point" data-id="G"> G</label>
-                                        <label><input type="checkbox" data-type="point" data-id="H"> H</label>
+                                <div class="checkbox-content-wrapper">
+                                    <div class="subcategory">
+                                        <h4>Titik Sudut</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="point" data-id="A"> A</label>
+                                            <label><input type="checkbox" data-type="point" data-id="B"> B</label>
+                                            <label><input type="checkbox" data-type="point" data-id="C"> C</label>
+                                            <label><input type="checkbox" data-type="point" data-id="D"> D</label>
+                                            <label><input type="checkbox" data-type="point" data-id="E"> E</label>
+                                            <label><input type="checkbox" data-type="point" data-id="F"> F</label>
+                                            <label><input type="checkbox" data-type="point" data-id="G"> G</label>
+                                            <label><input type="checkbox" data-type="point" data-id="H"> H</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="subcategory">
-                                    <h4>Rusuk</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="edge" data-id="AB"> AB</label>
-                                        <label><input type="checkbox" data-type="edge" data-id="BC"> BC</label>
-                                        <label><input type="checkbox" data-type="edge" data-id="CD"> CD</label>
-                                        <label><input type="checkbox" data-type="edge" data-id="DA"> DA</label>
-                                        <label><input type="checkbox" data-type="edge" data-id="EF"> EF</label>
-                                        <label><input type="checkbox" data-type="edge" data-id="FG"> FG</label>
-                                        <label><input type="checkbox" data-type="edge" data-id="GH"> GH</label>
-                                        <label><input type="checkbox" data-type="edge" data-id="HE"> HE</label>
-                                        <label><input type="checkbox" data-type="edge" data-id="AE"> AE</label>
-                                        <label><input type="checkbox" data-type="edge" data-id="BF"> BF</label>
-                                        <label><input type="checkbox" data-type="edge" data-id="CG"> CG</label>
-                                        <label><input type="checkbox" data-type="edge" data-id="DH"> DH</label>
+                                    <div class="subcategory">
+                                        <h4>Rusuk</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="edge" data-id="AB"> AB</label>
+                                            <label><input type="checkbox" data-type="edge" data-id="BC"> BC</label>
+                                            <label><input type="checkbox" data-type="edge" data-id="CD"> CD</label>
+                                            <label><input type="checkbox" data-type="edge" data-id="DA"> DA</label>
+                                            <label><input type="checkbox" data-type="edge" data-id="EF"> EF</label>
+                                            <label><input type="checkbox" data-type="edge" data-id="FG"> FG</label>
+                                            <label><input type="checkbox" data-type="edge" data-id="GH"> GH</label>
+                                            <label><input type="checkbox" data-type="edge" data-id="HE"> HE</label>
+                                            <label><input type="checkbox" data-type="edge" data-id="AE"> AE</label>
+                                            <label><input type="checkbox" data-type="edge" data-id="BF"> BF</label>
+                                            <label><input type="checkbox" data-type="edge" data-id="CG"> CG</label>
+                                            <label><input type="checkbox" data-type="edge" data-id="DH"> DH</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -274,93 +300,123 @@
                         <div class="category">
                             <div class="category-header" data-category="bidang">
                                 <span class="toggle-icon">▶</span>
-                                Bidang (Sisi)
+                                🔲 Bidang (Sisi)
                             </div>
                             <div class="category-content">
-                                <div class="subcategory">
-                                    <h4>Sisi Alas</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="face" data-id="ABCD"> ABCD</label>
+                                <div class="checkbox-content-wrapper">
+                                    <div class="subcategory">
+                                        <h4>Sisi Alas</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face" data-id="ABCD"> ABCD</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="subcategory">
-                                    <h4>Sisi Atas</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="face" data-id="EFGH"> EFGH</label>
+                                    <div class="subcategory">
+                                        <h4>Sisi Atas</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face" data-id="EFGH"> EFGH</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="subcategory">
-                                    <h4>Sisi Depan</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="face" data-id="ABFE"> ABFE</label>
+                                    <div class="subcategory">
+                                        <h4>Sisi Depan</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face" data-id="ABFE"> ABFE</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="subcategory">
-                                    <h4>Sisi Belakang</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="face" data-id="DCGH"> DCGH</label>
+                                    <div class="subcategory">
+                                        <h4>Sisi Belakang</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face" data-id="DCGH"> DCGH</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="subcategory">
-                                    <h4>Sisi Kiri</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="face" data-id="ADHE"> ADHE</label>
+                                    <div class="subcategory">
+                                        <h4>Sisi Kiri</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face" data-id="ADHE"> ADHE</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="subcategory">
-                                    <h4>Sisi Kanan</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="face" data-id="BCGF"> BCGF</label>
+                                    <div class="subcategory">
+                                        <h4>Sisi Kanan</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face" data-id="BCGF"> BCGF</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="category-toggle-row">
                         <div class="category">
                             <div class="category-header" data-category="diagonal-bidang">
                                 <span class="toggle-icon">▶</span>
-                                Diagonal Bidang
+                                🔄 Diagonal Bidang
                             </div>
                             <div class="category-content">
-                                <div class="subcategory">
-                                    <h4>Diagonal Bidang Alas</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="face-diagonal" data-id="AC"> AC</label>
-                                        <label><input type="checkbox" data-type="face-diagonal" data-id="BD"> BD</label>
+                                <div class="checkbox-content-wrapper">
+                                    <div class="subcategory">
+                                        <h4>Diagonal Bidang Alas</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face-diagonal" data-id="AC"> AC</label>
+                                            <label><input type="checkbox" data-type="face-diagonal" data-id="BD"> BD</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="subcategory">
-                                    <h4>Diagonal Bidang Atas</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="face-diagonal" data-id="EG"> EG</label>
-                                        <label><input type="checkbox" data-type="face-diagonal" data-id="FH"> FH</label>
+                                    <div class="subcategory">
+                                        <h4>Diagonal Bidang Atas</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face-diagonal" data-id="EG"> EG</label>
+                                            <label><input type="checkbox" data-type="face-diagonal" data-id="FH"> FH</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="subcategory">
-                                    <h4>Diagonal Bidang Depan</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="face-diagonal" data-id="AF"> AF</label>
-                                        <label><input type="checkbox" data-type="face-diagonal" data-id="BE"> BE</label>
+                                    <div class="subcategory">
+                                        <h4>Diagonal Bidang Depan</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face-diagonal" data-id="AF"> AF</label>
+                                            <label><input type="checkbox" data-type="face-diagonal" data-id="BE"> BE</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="subcategory">
-                                    <h4>Diagonal Bidang Belakang</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="face-diagonal" data-id="CH"> CH</label>
-                                        <label><input type="checkbox" data-type="face-diagonal" data-id="DG"> DG</label>
+                                    <div class="subcategory">
+                                        <h4>Diagonal Bidang Belakang</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face-diagonal" data-id="CH"> CH</label>
+                                            <label><input type="checkbox" data-type="face-diagonal" data-id="DG"> DG</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="subcategory">
-                                    <h4>Diagonal Bidang Kiri</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="face-diagonal" data-id="AH"> AH</label>
-                                        <label><input type="checkbox" data-type="face-diagonal" data-id="DE"> DE</label>
+                                    <div class="subcategory">
+                                        <h4>Diagonal Bidang Kiri</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face-diagonal" data-id="AH"> AH</label>
+                                            <label><input type="checkbox" data-type="face-diagonal" data-id="DE"> DE</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="subcategory">
-                                    <h4>Diagonal Bidang Kanan</h4>
-                                    <div class="checkboxes">
-                                        <label><input type="checkbox" data-type="face-diagonal" data-id="BG"> BG</label>
-                                        <label><input type="checkbox" data-type="face-diagonal" data-id="CF"> CF</label>
+                                    <div class="subcategory">
+                                        <h4>Diagonal Bidang Kanan</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face-diagonal" data-id="BG"> BG</label>
+                                            <label><input type="checkbox" data-type="face-diagonal" data-id="CF"> CF</label>
+                                        </div>
+                                    </div>
+                                    <div class="subcategory">
+                                        <h4>Bidang Diagonal DHFB</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face" data-id="DHFB"> DHFB</label>
+                                        </div>
+                                    </div>
+                                    <div class="subcategory">
+                                        <h4>Bidang Diagonal EDCF</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face" data-id="EDCF"> EDCF</label>
+                                        </div>
+                                    </div>
+                                    <div class="subcategory">
+                                        <h4>Bidang Diagonal EACG</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face" data-id="EACG"> EACG</label>
+                                        </div>
+                                    </div>
+                                    <div class="subcategory">
+                                        <h4>Bidang Diagonal HABG</h4>
+                                        <div class="checkboxes">
+                                            <label><input type="checkbox" data-type="face" data-id="HABG"> HABG</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -368,27 +424,30 @@
                         <div class="category">
                             <div class="category-header" data-category="diagonal-ruang">
                                 <span class="toggle-icon">▶</span>
-                                Diagonal Ruang
+                                🌌 Diagonal Ruang
                             </div>
                             <div class="category-content">
-                                <div class="checkboxes">
-                                    <label><input type="checkbox" data-type="space-diagonal" data-id="AG"> AG</label>
-                                    <label><input type="checkbox" data-type="space-diagonal" data-id="BH"> BH</label>
-                                    <label><input type="checkbox" data-type="space-diagonal" data-id="CE"> CE</label>
-                                    <label><input type="checkbox" data-type="space-diagonal" data-id="DF"> DF</label>
+                                <div class="checkbox-content-wrapper">
+                                    <div class="checkboxes">
+                                        <label><input type="checkbox" data-type="space-diagonal" data-id="AG"> AG</label>
+                                        <label><input type="checkbox" data-type="space-diagonal" data-id="BH"> BH</label>
+                                        <label><input type="checkbox" data-type="space-diagonal" data-id="CE"> CE</label>
+                                        <label><input type="checkbox" data-type="space-diagonal" data-id="DF"> DF</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="canvas-container">
-                        <button id="display-mode-btn" class="display-mode-btn">👁️</button>
-                        <canvas id="threejs-canvas"></canvas>
-                    </div>
+                </div>
+                <div class="canvas-container" style="width: 100%; height: 450px;">
+                    <button id="display-mode-btn" class="display-mode-btn" title="Ubah Mode Tampilan">👁️ Mode Tampilan</button>
+                    <canvas id="threejs-canvas" style="width: 100%; height: 100%;"></canvas>
                 </div>
             </main>
         </div>
     </div>
     <script src="app.js"></script>
+    <script src="pages/shared-three.js"></script>
     <script src="pages/menu.js"></script>
     <script src="pages/peta-konstruksi.js"></script>
     <script src="pages/lahan-syarat.js"></script>
