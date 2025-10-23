@@ -54,13 +54,13 @@
 			// Set to false to disable zooming
 
 			this.enableZoom = true;
-			this.zoomSpeed = 1.0; // Set to false to disable rotating
+			this.zoomSpeed = 0.8; // Reduced for better mobile pinch-to-zoom control
 
 			this.enableRotate = true;
-			this.rotateSpeed = 1.0; // Set to false to disable panning
+			this.rotateSpeed = 0.7; // Reduced for better mobile touch sensitivity
 
 			this.enablePan = true;
-			this.panSpeed = 1.0;
+			this.panSpeed = 0.8; // Reduced for better mobile touch control
 			this.screenSpacePanning = true; // if false, pan orthogonal to world-space direction camera.up
 
 			this.keyPanSpeed = 7.0; // pixels moved per arrow key push

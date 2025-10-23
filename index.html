@@ -5,38 +5,622 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Uji Geometri 3D</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Geometri 3D">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <script src="three.min.js"></script>
     <script src="OrbitControls.js"></script>
+    <style>
+        /* Modern Menu Page Styles - Full Width Layout */
+        #menu-page {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(33, 150, 243, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(76, 175, 80, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 152, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 60% 10%, rgba(156, 39, 176, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow-x: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #menu-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="menu-pattern" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.03"/><circle cx="75" cy="75" r="1" fill="%23ffffff" opacity="0.03"/><circle cx="50" cy="10" r="0.5" fill="%23ffffff" opacity="0.03"/><circle cx="10" cy="90" r="0.5" fill="%23ffffff" opacity="0.03"/><text x="50" y="50" font-family="Arial" font-size="4" fill="%23ffffff" opacity="0.02" text-anchor="middle">∑</text><text x="25" y="75" font-family="Arial" font-size="3" fill="%23ffffff" opacity="0.02" text-anchor="middle">π</text></pattern></defs><rect width="100" height="100" fill="url(%23menu-pattern)"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Hero Section - Full Width */
+        .hero-section {
+            position: relative;
+            z-index: 1;
+            padding: clamp(40px, 8vw, 80px) clamp(20px, 4vw, 40px) clamp(60px, 10vw, 100px);
+            text-align: center;
+            color: white;
+            overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+
+        .hero-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: clamp(15px, 3vw, 20px);
+            background: linear-gradient(45deg, #ffffff, #e3f2fd, #f3e5f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: clamp(20px, 5vw, 40px);
+            opacity: 0.9;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: clamp(20px, 5vw, 40px);
+            margin-top: clamp(20px, 5vw, 40px);
+        }
+
+        .hero-stats .stat-item {
+            text-align: center;
+        }
+
+        .hero-stats .stat-number {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: clamp(3px, 1vw, 5px);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-stats .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-shape {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .shape-3 {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        .shape-4 {
+            top: 40%;
+            right: 10%;
+            animation-delay: 1s;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        /* Features Section - Full Width */
+        .features-section {
+            position: relative;
+            z-index: 1;
+            padding: clamp(60px, 12vw, 100px) clamp(20px, 4vw, 40px);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 6vw, 2.8rem);
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: clamp(30px, 6vw, 60px);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 30vw, 320px), 1fr));
+            gap: clamp(20px, 4vw, 40px);
+            width: 100%;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: clamp(15px, 3vw, 20px);
+            padding: clamp(20px, 4vw, 30px);
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(33, 150, 243, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: clamp(2.5rem, 6vw, 3rem);
+            margin-bottom: clamp(15px, 3vw, 20px);
+        }
+
+        .feature-card h3 {
+            font-size: clamp(1.2rem, 3vw, 1.4rem);
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: clamp(10px, 2vw, 15px);
+        }
+
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: clamp(14px, 2.5vw, 15px);
+        }
+
+        /* Navigation Section - Full Width */
+        .nav-section {
+            position: relative;
+            z-index: 1;
+            padding: clamp(60px, 12vw, 100px) clamp(20px, 4vw, 40px);
+            background: rgba(255, 255, 255, 0.08);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .nav-buttons {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(300px, 40vw, 400px), 1fr));
+            gap: clamp(20px, 3vw, 30px);
+            width: 100%;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: clamp(15px, 3vw, 20px);
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: clamp(12px, 2vw, 16px);
+            padding: clamp(20px, 4vw, 25px) clamp(20px, 3vw, 30px);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+        }
+
+        .nav-btn.primary:hover {
+            background: linear-gradient(135deg, #388e3c, #4caf50);
+            box-shadow: 0 15px 35px rgba(76, 175, 80, 0.3);
+        }
+
+        .nav-btn.secondary {
+            background: linear-gradient(135deg, #2196f3, #42a5f5);
+            color: white;
+        }
+
+        .nav-btn.secondary:hover {
+            background: linear-gradient(135deg, #1976d2, #2196f3);
+            box-shadow: 0 15px 35px rgba(33, 150, 243, 0.3);
+        }
+
+        .nav-btn.tertiary {
+            background: linear-gradient(135deg, #ff9800, #ffb74d);
+            color: white;
+        }
+
+        .nav-btn.tertiary:hover {
+            background: linear-gradient(135deg, #e65100, #ff9800);
+            box-shadow: 0 15px 35px rgba(255, 152, 0, 0.3);
+        }
+
+        .nav-btn.quaternary {
+            background: linear-gradient(135deg, #9c27b0, #ba68c8);
+            color: white;
+        }
+
+        .nav-btn.quaternary:hover {
+            background: linear-gradient(135deg, #7b1fa2, #9c27b0);
+            box-shadow: 0 15px 35px rgba(156, 39, 176, 0.3);
+        }
+
+        .btn-icon {
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            flex-shrink: 0;
+            opacity: 0.9;
+        }
+
+        .btn-content {
+            flex: 1;
+        }
+
+        .btn-title {
+            font-size: clamp(1.2rem, 3vw, 1.4rem);
+            font-weight: 700;
+            margin-bottom: clamp(3px, 1vw, 5px);
+        }
+
+        .btn-description {
+            font-size: clamp(13px, 2.5vw, 14px);
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .btn-arrow {
+            font-size: 1.5rem;
+            font-weight: bold;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover .btn-arrow {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+
+        /* Responsive Design - Full Width */
+        @media (max-width: 1024px) {
+            .hero-section {
+                padding: 60px 30px 80px;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .features-section,
+            .nav-section {
+                padding: 80px 30px;
+            }
+
+            .nav-buttons {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+                gap: 25px;
+            }
+
+            .nav-btn {
+                padding: 30px 35px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 50px 25px 70px;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .section-title {
+                font-size: 2.2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .feature-card {
+                padding: 30px;
+            }
+
+            .features-section,
+            .nav-section {
+                padding: 70px 25px;
+            }
+
+            .nav-buttons {
+                gap: 20px;
+            }
+
+            .nav-btn {
+                padding: 25px 30px;
+                gap: 15px;
+            }
+
+            .btn-icon {
+                font-size: 2.2rem;
+            }
+
+            .btn-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 40px 20px 60px;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-stats .stat-number {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .features-section,
+            .nav-section {
+                padding: 60px 20px;
+            }
+
+            .features-grid {
+                gap: 20px;
+            }
+
+            .feature-card {
+                padding: 25px;
+            }
+
+            .nav-btn {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 20px 25px;
+            }
+
+            .btn-content {
+                text-align: center;
+            }
+
+            .btn-icon {
+                font-size: 2rem;
+            }
+
+            .btn-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="app">
         <!-- Main Menu Page -->
         <div id="menu-page" class="page active">
-            <header class="menu-header">
-                <div class="icon-left">🏠</div>
-                <h1>MENU</h1>
-                <button class="logout-btn">Logout</button>
-            </header>
-            <main class="menu-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <div class="hero-icon">🎯</div>
+                    <h1 class="hero-title">Game Uji Geometri 3D</h1>
+                    <p class="hero-subtitle">Pelajari dan Kuasai Konsep Geometri Balok Melalui Pengalaman Interaktif</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">6</div>
+                            <div class="stat-label">Level Tantangan</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3D</div>
+                            <div class="stat-label">Visualisasi</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">🎮</div>
+                            <div class="stat-label">Interaktif</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-decoration">
+                    <div class="floating-shape shape-1">△</div>
+                    <div class="floating-shape shape-2">□</div>
+                    <div class="floating-shape shape-3">○</div>
+                    <div class="floating-shape shape-4">⬡</div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features-section">
+                <h2 class="section-title">✨ Fitur Unggulan</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎮</div>
+                        <h3>Game Interaktif</h3>
+                        <p>Drag & drop elemen geometri dengan kontrol 3D yang intuitif</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📚</div>
+                        <h3>Pembelajaran Komprehensif</h3>
+                        <p>Pelajari dari titik sudut hingga diagonal ruang balok</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Tantangan Bertahap</h3>
+                        <p>6 level dengan kesulitan yang meningkat secara bertahap</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Tracking Progress</h3>
+                        <p>Monitor pencapaian dan akurasi jawaban Anda</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation Section -->
+            <section class="nav-section">
+                <h2 class="section-title">🚀 Pilih Destinasi Pembelajaran</h2>
                 <div class="nav-buttons">
-                    <button class="nav-btn" data-page="peta-konstruksi">
+                    <button class="nav-btn primary" data-page="peta-konstruksi">
                         <div class="btn-icon">🗺️</div>
-                        <div class="btn-text">Peta Konstruksi</div>
+                        <div class="btn-content">
+                            <div class="btn-title">Peta Konstruksi</div>
+                            <div class="btn-description">Panduan konstruksi dan timeline pembelajaran</div>
+                        </div>
+                        <div class="btn-arrow">→</div>
                     </button>
-                    <button class="nav-btn" data-page="lahan-syarat">
+                    <button class="nav-btn secondary" data-page="lahan-syarat">
                         <div class="btn-icon">📋</div>
-                        <div class="btn-text">Lahan Syarat</div>
+                        <div class="btn-content">
+                            <div class="btn-title">Lahan Syarat</div>
+                            <div class="btn-description">Tes prasyarat pengetahuan geometri dasar</div>
+                        </div>
+                        <div class="btn-arrow">→</div>
                     </button>
-                    <button class="nav-btn" data-page="petunjuk-konstruksi">
+                    <button class="nav-btn tertiary" data-page="petunjuk-konstruksi">
                         <div class="btn-icon">📖</div>
-                        <div class="btn-text">Petunjuk Konstruksi</div>
+                        <div class="btn-content">
+                            <div class="btn-title">Petunjuk Konstruksi</div>
+                            <div class="btn-description">Eksplorasi interaktif elemen-elemen geometri balok</div>
+                        </div>
+                        <div class="btn-arrow">→</div>
                     </button>
-                    <button class="nav-btn" data-page="lahan-bermain">
+                    <button class="nav-btn quaternary" data-page="lahan-bermain">
                         <div class="btn-icon">🎮</div>
-                        <div class="btn-text">Lahan Bermain</div>
+                        <div class="btn-content">
+                            <div class="btn-title">Lahan Bermain</div>
+                            <div class="btn-description">Mainkan game interaktif dengan 6 level tantangan</div>
+                        </div>
+                        <div class="btn-arrow">→</div>
                     </button>
                 </div>
-            </main>
+            </section>
+
         </div>
 
         <!-- Peta Konstruksi Page -->
@@ -46,48 +630,7 @@
                 <h2>PETA KONSTRUKSI</h2>
             </nav>
             <main class="content">
-                <div class="text-box">
-                    <h3 class="text-box-header">🎯 TUJUAN PEMBELAJARAN</h3>
-                    <ol>
-                        <li>Memahami konsep dasar geometri dalam pembelajaran matematika.</li>
-                        <li>Mengidentifikasi bentuk-bentuk geometri pada bangun ruang 3D.</li>
-                        <li>Menerapkan konsep geometri dalam perhitungan luas, keliling, dan volume.</li>
-                        <li>Mengembangkan kemampuan pemecahan masalah melalui simulasi interaktif.</li>
-                        <li>Menghargai pentingnya geometri dalam kehidupan sehari-hari.</li>
-                    </ol>
-                </div>
-                <div class="text-box">
-                    <h3 class="text-box-header">📚 KOMPETENSI DASAR</h3>
-                    <div class="competency">
-                        <div class="sub-point">
-                            <span class="badge green">KD 3.1</span>
-                            Mengidentifikasi sifat-sifat bangun datar dan ruang.
-                        </div>
-                        <div class="sub-point">
-                            <span class="badge green">KD 3.2</span>
-                            Menghitung luas dan keliling bangun datar serta volume dan luas permukaan bangun ruang.
-                        </div>
-                        <div class="sub-point">
-                            <span class="badge green">KD 4.1</span>
-                            Menyelesaikan masalah yang berkaitan dengan bangun datar dan ruang.
-                        </div>
-                    </div>
-                </div>
-                <div class="text-box">
-                    <h3 class="text-box-header">🏆 INDIKATOR PENCAPAIAN</h3>
-                    <div class="indicators">
-                        <div class="indicator">
-                            <strong>Kognitif:</strong> Siswa dapat mengidentifikasi dan menghitung elemen geometri pada bangun ruang 3D.
-                        </div>
-                        <div class="indicator">
-                            <strong>Afektif:</strong> Siswa menunjukkan apresiasi terhadap pentingnya geometri dalam kehidupan sehari-hari.
-                        </div>
-                        <div class="indicator">
-                            <strong>Psikomotorik:</strong> Siswa dapat menyusun komponen konstruksi secara akurat menggunakan prinsip geometri.
-                        </div>
-                    </div>
-                </div>
-                <button class="next-btn blue" data-page="lahan-syarat">LANJUT KE TES PRASYARAT →</button>
+                <!-- Timeline will be rendered here by JavaScript -->
             </main>
         </div>
 
@@ -97,132 +640,10 @@
                 <button class="back-btn" data-page="peta-konstruksi">←</button>
                 <h2>LAHAN SYARAT</h2>
             </nav>
-            <main class="content">
-                <div class="progress-bar">
-                    <span id="progress-text">Soal 1 dari 5</span>
-                    <div class="progress">
-                        <div class="progress-fill" id="progress-fill" style="width: 20%;"></div>
-                    </div>
-                </div>
-                <div id="question-container">
-                    <!-- Questions will be loaded here -->
-                </div>
-                <div id="feedback-container" style="display: none;">
-                    <!-- Feedback will be shown here -->
-                </div>
-                <button id="next-btn" class="next-btn" style="display: none;">SOAL BERIKUTNYA →</button>
-            </main>
-        </div>
+ 
 
-        <!-- Lahan Bermain Page -->
-        <div id="lahan-bermain-page" class="page">
-            <nav class="nav-bar">
-                <button class="back-btn" data-page="menu">←</button>
-                <h2>LAHAN BERMAIN</h2>
-            </nav>
-            <main class="content">
-                <div class="game-intro">
-                    <div class="game-icon">🎯</div>
-                    <p>Tantang pemahaman geometri Balok dengan 6 level interaktif</p>
-                </div>
-                <div class="text-box">
-                    <h3 class="text-box-header">🎮 CARA BERMAIN</h3>
-                    <ul>
-                        <li><span class="icon">🎯</span> <strong>Target Elemen:</strong> Setiap level meminta Anda menemukan elemen geometri tertentu pada Balok 3D.</li>
-                        <li><span class="icon">👆</span> <strong>Drag & Drop:</strong> Seret kartu unsur dari toolbox ke elemen Balok yang benar.</li>
-                        <li><span class="icon">💡</span> <strong>Petunjuk:</strong> Gunakan tombol petunjuk maksimal 2 kali per level untuk melihat target yang berkedip.</li>
-                        <li><span class="icon">📊</span> <strong>Skor Akurasi:</strong> Raih skor 100% dengan meminimalkan kesalahan dan penggunaan petunjuk.</li>
-                        <li><span class="icon">🔓</span> <strong>Level Terpisah:</strong> Selesaikan level sebelumnya untuk membuka level berikutnya.</li>
-                    </ul>
-                </div>
-                <button class="start-btn green" id="start-construction-btn">🎯 PILIH LEVEL</button>
-            </main>
-        </div>
 
-        <!-- Level Selection Hub -->
-        <div id="level-selection-page" class="page">
-            <nav class="nav-bar">
-                <button class="back-btn" data-page="lahan-bermain">←</button>
-                <h2>PEMILIHAN LEVEL</h2>
-            </nav>
-            <main class="content">
-                <div class="level-grid" id="level-grid">
-                    <!-- Level cards will be generated here -->
-                </div>
-            </main>
-        </div>
 
-        <!-- Game Level Page -->
-        <div id="game-level-page" class="page">
-            <nav class="nav-bar">
-                <button class="back-btn" id="level-back-btn" data-page="level-selection">←</button>
-                <h2 id="level-title">LEVEL 1</h2>
-            </nav>
-            <main class="content">
-                <div class="level-info">
-                    <div class="mission-card">
-                        <h3 id="mission-title">MISI LEVEL</h3>
-                        <p id="mission-description">Temukan semua titik sudut pada lantai Balok</p>
-                    </div>
-                    <div class="stats-panel">
-                        <div class="stat-item">
-                            <span class="stat-label">Akurasi:</span>
-                            <span class="stat-value" id="accuracy-stat">0/0 (0%)</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Petunjuk:</span>
-                            <span class="stat-value" id="hints-stat">0/2</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Waktu:</span>
-                            <span class="stat-value" id="time-stat">00:00</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="game-play-area">
-                    <div class="game-toolbox">
-                        <h3 id="toolbox-title">TOOLBOX</h3>
-                        <div class="game-components" id="game-components">
-                            <!-- Game component cards will be generated here -->
-                        </div>
-                        <div class="game-controls">
-                            <button class="hint-btn" id="hint-btn" aria-label="Gunakan petunjuk (tersisa 2 kali)">💡 PETUNJUK (0/2)</button>
-                        </div>
-                    </div>
-                    <div class="game-canvas-container">
-                        <canvas id="game-threejs-canvas"></canvas>
-                    </div>
-                </div>
-            </main>
-        </div>
-
-        <!-- Level Complete Overlay -->
-        <div id="level-complete-overlay" class="overlay hidden">
-            <div class="overlay-content">
-                <div class="completion-header">
-                    <div class="completion-icon">🎉</div>
-                    <h2 id="completion-title">LEVEL 1 SELESAI!</h2>
-                </div>
-                <div class="completion-stats">
-                    <div class="stat-row">
-                        <span class="stat-label">Skor Akurasi:</span>
-                        <span class="stat-value" id="final-accuracy">100%</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Waktu Penyelesaian:</span>
-                        <span class="stat-value" id="completion-time">02:30</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Petunjuk Digunakan:</span>
-                        <span class="stat-value" id="hints-used">0/2</span>
-                    </div>
-                </div>
-                <div class="completion-buttons">
-                    <button class="completion-btn secondary" id="play-again-btn">🔄 MAIN LAGI</button>
-                    <button class="completion-btn primary" id="next-level-btn">▶ LANJUT LEVEL</button>
-                </div>
-            </div>
-        </div>
 
         <!-- Petunjuk Konstruksi Page -->
         <div id="petunjuk-konstruksi-page" class="page">
@@ -448,12 +869,7 @@
     </div>
     <script src="app.js"></script>
     <script src="pages/shared-three.js"></script>
-    <script src="pages/menu.js"></script>
-    <script src="pages/peta-konstruksi.js"></script>
     <script src="pages/lahan-syarat.js"></script>
     <script src="pages/petunjuk-konstruksi.js"></script>
-    <script src="pages/lahan-bermain.js"></script>
-    <script src="pages/level-selection.js"></script>
-    <script src="pages/game-level.js"></script>
 </body>
 </html>

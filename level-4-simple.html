@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 4: Diagonal Bidang Alas - Game Uji Geometri 3D</title>
+    <meta name="description" content="Level 4 - Temukan diagonal bidang alas pada Balok 3D">
+    <meta name="keywords" content="geometri, 3D, balok, diagonal bidang, matematika, pembelajaran, game edukasi">
+    <meta name="author" content="Game Uji Geometri 3D">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="styles.css">
+    <script src="three.min.js"></script>
+    <script src="OrbitControls.js"></script>
+    <style>
+        /* Level 4 Standalone styles */
+        .level-4-standalone {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--color-base-creme) 0%, #e8f5e8 100%);
+            padding: 20px;
+            font-family: 'Poppins', 'Quicksand', Arial, sans-serif;
+        }
+
+        .level-4-standalone .level-4-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px var(--color-shadow);
+            border: 2px solid var(--color-border-light);
+        }
+
+        .level-4-standalone .level-4-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--color-text-dark);
+        }
+
+        .level-4-standalone .level-4-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--color-primary-green), var(--color-secondary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .level-4-standalone .level-4-subtitle {
+            font-size: 1.2rem;
+            color: var(--color-text-light);
+            margin-bottom: 20px;
+        }
+
+        .level-4-standalone .back-to-main {
+            display: inline-block;
+            background: var(--color-primary-green);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px var(--color-shadow);
+        }
+
+        .level-4-standalone .back-to-main:hover {
+            background: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Game interface */
+        .game-interface {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .game-sidebar {
+            background: var(--color-base-creme);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px var(--color-shadow);
+        }
+
+        .game-stats {
+            margin-bottom: 25px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: var(--color-text-dark);
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: var(--color-primary-green);
+        }
+
+        .toolbox-section {
+            margin-bottom: 25px;
+        }
+
+        .toolbox-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--color-text-dark);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .toolbox-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .toolbox-card {
+            background: white;
+            border: 2px solid var(--color-primary-green);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.3s ease;
+            user-select: none;
+            box-shadow: 0 2px 4px var(--color-shadow);
+            transform: translateZ(0); /* Enable hardware acceleration */
+        }
+
+        .toolbox-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--color-shadow);
+            border-color: var(--color-accent-orange);
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.05), rgba(255, 255, 255, 0.95));
+        }
+
+        .toolbox-card.is-dragging {
+            opacity: 0.5;
+            transform: rotate(5deg) scale(1.05) translateZ(0);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            cursor: grabbing;
+        }
+
+        .card-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .card-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--color-text-dark);
+        }
+
+        .game-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .reset-btn {
+            background: var(--color-error-red);
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background: #D32F2F;
+            transform: translateY(-2px);
+        }
+
+        .game-canvas-area {
+            background: var(--color-base-creme);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px var(--color-shadow);
+            position: relative;
+            min-height: 500px;
+        }
+
+        .canvas-container {
+            width: 100%;
+            height: 450px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            background: white;
+        }
+
+        .level-info {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .current-level-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--color-primary-green);
+            margin-bottom: 10px;
+        }
+
+        .level-objective {
+            color: var(--color-text-light);
+            font-size: 16px;
+        }
+
+        /* Completion modal */
+        .completion-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .completion-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .completion-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .completion-title {
+            font-size: 28px;
+            color: var(--color-primary-green);
+            margin-bottom: 20px;
+        }
+
+        .completion-stats {
+            margin-bottom: 30px;
+        }
+
+        .completion-btn {
+            background: var(--color-primary-green);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .completion-btn:hover {
+            background: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .level-4-standalone {
+                padding: 15px;
+            }
+
+            .level-4-standalone .level-4-container {
+                padding: 20px;
+            }
+
+            .level-4-standalone .level-4-title {
+                font-size: 2rem;
+            }
+
+            .game-interface {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .game-sidebar {
+                order: 2;
+            }
+
+            .game-canvas-area {
+                order: 1;
+            }
+
+            .toolbox-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .game-controls {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="level-4-standalone">
+        <a href="index.html" class="home-button" title="Kembali ke Home">🏠</a>
+        <div class="level-4-container">
+            <div class="level-4-header">
+                <a href="lahan-bermain.html" class="back-to-main">← Kembali ke Lahan Bermain</a>
+                <h1 class="level-4-title">Level 4: Diagonal Bidang Alas</h1>
+                <p class="level-4-subtitle">Temukan diagonal yang menghubungkan sudut berseberangan pada alas Balok</p>
+            </div>
+
+            <div class="level-info">
+                <h2 class="current-level-title">LEVEL 4: DIAGONAL BIDANG ALAS</h2>
+                <p class="level-objective">Temukan kedua diagonal yang menghubungkan sudut berseberangan pada alas Balok (AC dan BD)</p>
+            </div>
+
+            <div class="game-interface">
+                <div class="game-sidebar">
+                    <div class="game-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Progress:</span>
+                            <span class="stat-value" id="progress-stat">0/2</span>
+                        </div>
+                    </div>
+
+                    <div class="toolbox-section">
+                        <h3 class="toolbox-title">TOOLBOX - DIAGONAL BIDANG</h3>
+                        <div class="toolbox-cards" id="game-components">
+                            <!-- Game component cards will be generated here -->
+                        </div>
+                    </div>
+
+                    <div class="game-controls">
+                        <button class="control-btn reset-btn" id="reset-btn">🔄 RESET JAWABAN</button>
+                    </div>
+                </div>
+
+                <div class="game-canvas-area">
+                    <div class="canvas-container">
+                        <canvas id="game-threejs-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Modal -->
+    <div id="level-complete-overlay" class="completion-modal" style="display: none;">
+        <div class="completion-content">
+            <div class="completion-icon">🎉</div>
+            <h2 class="completion-title" id="completion-title">LEVEL 4 SELESAI!</h2>
+            <div class="completion-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Kedua diagonal telah ditemukan!</span>
+                </div>
+            </div>
+            <button class="completion-btn" id="continue-btn">LANJUT KE LEVEL BERIKUTNYA →</button>
+        </div>
+    </div>
+
+    <script>
+        // Level 4 Standalone Game - Diagonal Bidang Alas
+        window.Level4Game = {
+            // Game State
+            gameState: {
+                matchedCount: 0,
+                isDragging: false,
+                draggedCard: null,
+                matchedElements: new Set(),
+                lastIntersectedObject: null,
+                allPlaced: false
+            },
+
+            // Three.js Objects
+            threeObjects: {
+                scene: null,
+                camera: null,
+                renderer: null,
+                controls: null,
+                balokGroup: null,
+                points: {},
+                edges: {},
+                faces: {},
+                faceDiagonals: {},
+                spaceDiagonals: {},
+                raycaster: null,
+                mouse: null
+            },
+
+            // DOM Elements Cache
+            domElements: {
+                gameComponents: null,
+                progressStat: null,
+                canvas: null,
+                resetBtn: null,
+                completionModal: null,
+                completionTitle: null,
+                continueBtn: null
+            },
+
+            init: function() {
+                console.log('[Level4Game] Initializing Level 4 standalone game');
+
+                // Cache DOM elements
+                this.cacheDOMElements();
+
+                // Setup event listeners
+                this.setupEventListeners();
+
+                // Initialize Three.js
+                this.waitForThreeJS().then(() => {
+                    this.initThreeJS();
+                }).catch((error) => {
+                    console.error('[Level4Game] Failed to load Three.js:', error);
+                    this.showThreeJSLoadError();
+                });
+
+                console.log('[Level4Game] Initialization complete');
+            },
+
+            cacheDOMElements: function() {
+                this.domElements.gameComponents = document.getElementById('game-components');
+                this.domElements.progressStat = document.getElementById('progress-stat');
+                this.domElements.canvas = document.getElementById('game-threejs-canvas');
+                this.domElements.resetBtn = document.getElementById('reset-btn');
+                this.domElements.completionModal = document.getElementById('level-complete-overlay');
+                this.domElements.completionTitle = document.getElementById('completion-title');
+                this.domElements.continueBtn = document.getElementById('continue-btn');
+            },
+
+            setupEventListeners: function() {
+                // Canvas drag events - unified mouse and touch handling
+                if (this.domElements.canvas) {
+                    // Mouse events
+                    this.domElements.canvas.addEventListener('dragover', this.handleCanvasDragOver.bind(this));
+                    this.domElements.canvas.addEventListener('drop', this.handleCanvasDrop.bind(this));
+                    this.domElements.canvas.addEventListener('dragleave', this.handleCanvasDragLeave.bind(this));
+                    this.domElements.canvas.addEventListener('dragenter', this.handleCanvasDragEnter.bind(this));
+
+                    // Touch events for mobile
+                    this.domElements.canvas.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
+                    this.domElements.canvas.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+                    this.domElements.canvas.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
+                }
+
+                // Control buttons
+                if (this.domElements.resetBtn) {
+                    this.domElements.resetBtn.addEventListener('click', this.resetGame.bind(this));
+                }
+
+                if (this.domElements.continueBtn) {
+                    this.domElements.continueBtn.addEventListener('click', this.continueToNext.bind(this));
+                }
+
+                // Window resize
+                window.addEventListener('resize', this.handleResize.bind(this));
+            },
+
+            waitForThreeJS: function() {
+                return new Promise((resolve, reject) => {
+                    let attempts = 0;
+                    const maxAttempts = 100;
+
+                    const checkThreeJS = () => {
+                        attempts++;
+                        console.log(`[Level4Game] Checking Three.js availability (attempt ${attempts})`);
+
+                        if (typeof THREE !== 'undefined' && typeof OrbitControls !== 'undefined') {
+                            console.log('[Level4Game] Three.js and OrbitControls are ready');
+                            resolve();
+                        } else if (attempts >= maxAttempts) {
+                            console.error('[Level4Game] Timeout waiting for Three.js and OrbitControls');
+                            reject(new Error('Timeout waiting for Three.js and OrbitControls to load'));
+                        } else {
+                            setTimeout(checkThreeJS, 100);
+                        }
+                    };
+
+                    checkThreeJS();
+                });
+            },
+
+            showThreeJSLoadError: function() {
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: #ff4444;
+                    color: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    text-align: center;
+                    z-index: 10000;
+                    font-family: Arial, sans-serif;
+                `;
+                errorDiv.innerHTML = `
+                    <h3>❌ Error Loading 3D Library</h3>
+                    <p>Three.js library failed to load. Please check your internet connection and refresh the page.</p>
+                    <button onclick="location.reload()" style="padding: 10px 20px; margin-top: 10px; background: white; color: #ff4444; border: none; border-radius: 5px; cursor: pointer;">Refresh Page</button>
+                `;
+                document.body.appendChild(errorDiv);
+            },
+
+            initThreeJS: function() {
+                console.log('[Level4Game] Initializing Three.js scene');
+
+                try {
+                    // Double-check Three.js availability
+                    if (typeof THREE === 'undefined') {
+                        console.error('[Level4Game] THREE is still not available after wait');
+                        this.showThreeJSLoadError();
+                        return;
+                    }
+
+                    if (typeof OrbitControls === 'undefined') {
+                        console.error('[Level4Game] OrbitControls is still not available after wait');
+                        this.showThreeJSLoadError();
+                        return;
+                    }
+
+                    // Check if canvas exists
+                    if (!this.domElements.canvas) {
+                        console.error('[Level4Game] Canvas element not found');
+                        return;
+                    }
+
+                    // Scene setup
+                    this.threeObjects.scene = new THREE.Scene();
+                    this.threeObjects.scene.background = new THREE.Color(0xf5f5f5);
+
+                    // Camera setup
+                    const canvasRect = this.domElements.canvas.getBoundingClientRect();
+                    this.threeObjects.camera = new THREE.PerspectiveCamera(
+                        75,
+                        canvasRect.width / canvasRect.height,
+                        0.1,
+                        1000
+                    );
+                    this.threeObjects.camera.position.set(3, 3, 3);
+
+                    // Renderer setup
+                    this.threeObjects.renderer = new THREE.WebGLRenderer({
+                        canvas: this.domElements.canvas,
+                        antialias: true,
+                        alpha: false
+                    });
+                    this.threeObjects.renderer.setSize(
+                        canvasRect.width,
+                        canvasRect.height
+                    );
+                    this.threeObjects.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                    // Controls setup
+                    if (typeof THREE.OrbitControls === 'function') {
+                        this.threeObjects.controls = new THREE.OrbitControls(
+                            this.threeObjects.camera,
+                            this.threeObjects.renderer.domElement
+                        );
+                    } else if (typeof OrbitControls === 'function') {
+                        this.threeObjects.controls = new OrbitControls(
+                            this.threeObjects.camera,
+                            this.threeObjects.renderer.domElement
+                        );
+                    } else {
+                        console.error('[Level4Game] OrbitControls constructor not available');
+                        return;
+                    }
+                    this.threeObjects.controls.enableDamping = true;
+                    this.threeObjects.controls.dampingFactor = 0.05;
+                    this.threeObjects.controls.enableZoom = true;
+                    this.threeObjects.controls.enablePan = true;
+
+                    // Lighting
+                    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+                    this.threeObjects.scene.add(ambientLight);
+
+                    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                    directionalLight.position.set(5, 5, 5);
+                    this.threeObjects.scene.add(directionalLight);
+
+                    // Raycaster setup
+                    this.threeObjects.raycaster = new THREE.Raycaster();
+                    this.threeObjects.mouse = new THREE.Vector2();
+
+                    // Create Balok
+                    this.createBalok();
+
+                    // Render toolbox
+                    this.renderToolbox();
+
+                    // Start render loop
+                    this.animate();
+
+                    // Force initial render
+                    this.threeObjects.renderer.render(this.threeObjects.scene, this.threeObjects.camera);
+
+                    console.log('[Level4Game] Three.js initialization successful');
+                } catch (error) {
+                    console.error('[Level4Game] Three.js initialization failed:', error);
+                }
+            },
+
+            createBalok: function() {
+                this.threeObjects.balokGroup = new THREE.Group();
+                this.threeObjects.scene.add(this.threeObjects.balokGroup);
+
+                const vertices = {
+                    A: new THREE.Vector3(-1, -1, -1), B: new THREE.Vector3(1, -1, -1),
+                    C: new THREE.Vector3(1, -1, 1), D: new THREE.Vector3(-1, -1, 1),
+                    E: new THREE.Vector3(-1, 1, -1), F: new THREE.Vector3(1, 1, -1),
+                    G: new THREE.Vector3(1, 1, 1), H: new THREE.Vector3(-1, 1, 1)
+                };
+
+                // Create points - always visible for reference
+                this.createPoints(vertices);
+
+                // Create edges - basic structure visible
+                this.createEdges(vertices);
+
+                // Create face diagonals - target elements for Level 4
+                this.createFaceDiagonals(vertices);
+
+                // Show only relevant elements for Level 4
+                this.updateBalokVisibility();
+            },
+
+            updateBalokVisibility: function() {
+                // Hide all elements first
+                Object.values(this.threeObjects.edges).forEach(edge => {
+                    edge.visible = false;
+                });
+                Object.values(this.threeObjects.faces).forEach(face => {
+                    face.visible = false;
+                });
+                Object.values(this.threeObjects.spaceDiagonals).forEach(diagonal => {
+                    diagonal.visible = false;
+                });
+
+                // Show basic edges for structural reference
+                const basicEdges = ['AB', 'BC', 'CD', 'DA'];
+                basicEdges.forEach(edgeId => {
+                    if (this.threeObjects.edges[edgeId]) {
+                        this.threeObjects.edges[edgeId].visible = true;
+                    }
+                });
+
+                // Show target face diagonals (AC, BD)
+                const targetDiagonals = ['AC', 'BD'];
+                targetDiagonals.forEach(diagonalId => {
+                    if (this.threeObjects.faceDiagonals[diagonalId]) {
+                        this.threeObjects.faceDiagonals[diagonalId].visible = true;
+                    }
+                });
+            },
+
+            createPoints: function(vertices) {
+                Object.keys(vertices).forEach(key => {
+                    const geometry = new THREE.SphereGeometry(0.08, 12, 12);
+                    const material = new THREE.MeshLambertMaterial({
+                        color: 0x333333,
+                        transparent: false
+                    });
+                    const point = new THREE.Mesh(geometry, material);
+                    point.position.copy(vertices[key]);
+                    point.userData.id = key;
+                    point.userData.type = 'point';
+                    point.userData.defaultColor = 0x333333;
+                    point.userData.highlightColor = 0xff9800;
+                    point.userData.correctColor = 0x4caf50;
+                    point.userData.isMatched = false;
+                    point.renderOrder = 3;
+                    point.visible = true;
+
+                    this.threeObjects.balokGroup.add(point);
+                    this.threeObjects.points[key] = point;
+
+                    // Add label for the point
+                    this.createPointLabel(key, vertices[key]);
+                });
+            },
+
+            createPointLabel: function(pointId, position) {
+                // Create canvas for text
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 64;
+                canvas.height = 64;
+
+                // Draw text
+                context.font = 'Bold 24px Arial';
+                context.fillStyle = 'white';
+                context.strokeStyle = 'black';
+                context.lineWidth = 2;
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+
+                // Draw text with outline
+                context.strokeText(pointId, 32, 32);
+                context.fillText(pointId, 32, 32);
+
+                // Create texture
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.generateMipmaps = false;
+                texture.minFilter = THREE.LinearFilter;
+
+                // Create sprite material
+                const spriteMaterial = new THREE.SpriteMaterial({
+                    map: texture,
+                    transparent: true,
+                    alphaTest: 0.1
+                });
+
+                // Create sprite
+                const sprite = new THREE.Sprite(spriteMaterial);
+                sprite.position.copy(position);
+                sprite.position.y += 0.15; // Offset above the point
+                sprite.scale.set(0.3, 0.3, 1); // Scale the label
+                sprite.userData.isLabel = true;
+
+                this.threeObjects.balokGroup.add(sprite);
+            },
+
+            createEdges: function(vertices) {
+                const edgePairs = [
+                    ['A', 'B'], ['B', 'C'], ['C', 'D'], ['D', 'A'],
+                    ['E', 'F'], ['F', 'G'], ['G', 'H'], ['H', 'E'],
+                    ['A', 'E'], ['B', 'F'], ['C', 'G'], ['D', 'H']
+                ];
+
+                edgePairs.forEach(([start, end]) => {
+                    const geometry = new THREE.BufferGeometry().setFromPoints([vertices[start], vertices[end]]);
+                    const material = new THREE.LineBasicMaterial({
+                        color: 0x333333,
+                        linewidth: 3,
+                        transparent: false
+                    });
+                    const edge = new THREE.Line(geometry, material);
+                    edge.userData.id = start + end;
+                    edge.userData.type = 'edge';
+                    edge.userData.defaultColor = 0x333333;
+                    edge.userData.highlightColor = 0xff9800;
+                    edge.userData.correctColor = 0x4caf50;
+                    edge.userData.isMatched = false;
+                    edge.renderOrder = 2;
+                    edge.visible = false;
+
+                    this.threeObjects.balokGroup.add(edge);
+                    this.threeObjects.edges[start + end] = edge;
+                });
+            },
+
+            createFaceDiagonals: function(vertices) {
+                const faceDiagonalPairs = [
+                    ['A', 'C'], ['B', 'D'], ['E', 'G'], ['F', 'H'],
+                    ['A', 'F'], ['B', 'E'], ['D', 'G'], ['C', 'H'],
+                    ['A', 'H'], ['D', 'E'], ['B', 'G'], ['C', 'F']
+                ];
+
+                faceDiagonalPairs.forEach(([start, end]) => {
+                    const geometry = new THREE.BufferGeometry().setFromPoints([vertices[start], vertices[end]]);
+                    const material = new THREE.LineBasicMaterial({
+                        color: 0x333333,
+                        linewidth: 2,
+                        transparent: false
+                    });
+                    const diagonal = new THREE.Line(geometry, material);
+                    diagonal.userData.id = start + end;
+                    diagonal.userData.type = 'face-diagonal';
+                    diagonal.userData.defaultColor = 0x333333;
+                    diagonal.userData.highlightColor = 0xff9800;
+                    diagonal.userData.correctColor = 0x4caf50;
+                    diagonal.userData.isMatched = false;
+                    diagonal.renderOrder = 2;
+                    diagonal.visible = false;
+
+                    this.threeObjects.balokGroup.add(diagonal);
+                    this.threeObjects.faceDiagonals[start + end] = diagonal;
+                });
+            },
+
+            renderToolbox: function() {
+                if (!this.domElements.gameComponents) return;
+
+                const targetIds = ['AC', 'BD'];
+                this.domElements.gameComponents.innerHTML = '';
+
+                targetIds.forEach(targetId => {
+                    const card = document.createElement('div');
+                    card.className = 'toolbox-card';
+                    card.draggable = true;
+                    card.dataset.elementId = targetId;
+                    card.dataset.elementType = 'Diagonal Bidang';
+
+                    card.innerHTML = `
+                        <div class="card-icon">↘️</div>
+                        <div class="card-name">${targetId}</div>
+                    `;
+
+                    // Drag event listeners
+                    card.addEventListener('dragstart', this.handleCardDragStart.bind(this));
+                    card.addEventListener('dragend', this.handleCardDragEnd.bind(this));
+
+                    this.domElements.gameComponents.appendChild(card);
+                });
+            },
+
+            handleCardDragStart: function(event) {
+                const card = event.target.closest('.toolbox-card');
+                if (!card) {
+                    event.preventDefault();
+                    return;
+                }
+
+                this.gameState.isDragging = true;
+                this.gameState.draggedCard = card;
+
+                // Add dragging class for visual feedback with hardware acceleration
+                card.classList.add('is-dragging');
+                card.style.transform = 'rotate(5deg) scale(1.05) translateZ(0)';
+
+                // Disable orbit controls during drag
+                if (this.threeObjects.controls) {
+                    this.threeObjects.controls.enabled = false;
+                }
+
+                // Set drag data
+                event.dataTransfer.setData('text/plain', card.dataset.elementId);
+                event.dataTransfer.effectAllowed = 'move';
+
+                console.log('[Level4Game] Started dragging:', card.dataset.elementId);
+            },
+
+            handleCardDragEnd: function(event) {
+                const card = event.target.closest('.toolbox-card');
+                if (card) {
+                    this.gameState.isDragging = false;
+                    card.classList.remove('is-dragging');
+                    card.style.transform = ''; // Reset transform
+                    this.gameState.draggedCard = null;
+
+                    // Re-enable orbit controls
+                    if (this.threeObjects.controls) {
+                        this.threeObjects.controls.enabled = true;
+                    }
+                }
+
+                // Clear any highlights and reset drag state
+                this.clearHighlights();
+                this.gameState.isDragging = false;
+                this.gameState.draggedCard = null;
+                this.gameState.lastIntersectedObject = null;
+
+                console.log('[Level4Game] Drag ended');
+            },
+
+            handleCanvasDragOver: function(event) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+
+                if (this.gameState.isDragging && this.gameState.draggedCard) {
+                    // Throttle raycaster updates for better performance
+                    if (!this.dragOverTimeout) {
+                        this.dragOverTimeout = setTimeout(() => {
+                            this.updateRaycaster(event);
+                            this.dragOverTimeout = null;
+                        }, 16); // ~60fps
+                    }
+                }
+            },
+
+            handleTouchStart: function(event) {
+                // Prevent default to avoid mouse events being triggered
+                event.preventDefault();
+
+                // Convert touch to mouse-like event for unified handling
+                if (event.touches.length > 0) {
+                    const touch = event.touches[0];
+                    const mouseEvent = {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY,
+                        preventDefault: () => {},
+                        dataTransfer: { dropEffect: 'move' }
+                    };
+
+                    // Start drag simulation
+                    this.gameState.isDragging = true;
+                    this.gameState.touchDragging = true;
+
+                    // Disable orbit controls during touch drag
+                    if (this.threeObjects.controls) {
+                        this.threeObjects.controls.enabled = false;
+                    }
+
+                    console.log('[Level4Game] Touch drag started');
+                }
+            },
+
+            handleTouchMove: function(event) {
+                // Prevent default to avoid scrolling and mouse events
+                event.preventDefault();
+
+                if (this.gameState.isDragging && this.gameState.touchDragging && event.touches.length > 0) {
+                    const touch = event.touches[0];
+                    const touchEvent = {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY,
+                        preventDefault: () => {},
+                        dataTransfer: { dropEffect: 'move' }
+                    };
+
+                    // Throttle raycaster updates for better performance
+                    if (!this.dragOverTimeout) {
+                        this.dragOverTimeout = setTimeout(() => {
+                            this.updateRaycaster(touchEvent);
+                            this.dragOverTimeout = null;
+                        }, 16); // ~60fps
+                    }
+                }
+            },
+
+            handleTouchEnd: function(event) {
+                // Prevent default to avoid mouse events
+                event.preventDefault();
+
+                if (this.gameState.isDragging && this.gameState.touchDragging) {
+                    // Convert touch to mouse-like event for drop handling
+                    if (event.changedTouches.length > 0) {
+                        const touch = event.changedTouches[0];
+                        const dropEvent = {
+                            clientX: touch.clientX,
+                            clientY: touch.clientY,
+                            preventDefault: () => {},
+                            dataTransfer: { dropEffect: 'move' }
+                        };
+
+                        // Handle as drop
+                        this.handleCanvasDrop(dropEvent);
+                    }
+
+                    // Reset touch drag state
+                    this.gameState.isDragging = false;
+                    this.gameState.touchDragging = false;
+
+                    // Re-enable orbit controls
+                    if (this.threeObjects.controls) {
+                        this.threeObjects.controls.enabled = true;
+                    }
+
+                    console.log('[Level4Game] Touch drag ended');
+                }
+            },
+
+            handleCanvasDragEnter: function(event) {
+                event.preventDefault();
+                // Add visual feedback when entering canvas area
+                if (this.domElements.canvas && this.domElements.canvas.parentElement) {
+                    this.domElements.canvas.parentElement.style.borderColor = 'var(--color-accent-orange)';
+                    this.domElements.canvas.parentElement.style.boxShadow = '0 0 10px rgba(255, 152, 0, 0.3)';
+                }
+            },
+
+            handleCanvasDragLeave: function(event) {
+                event.preventDefault();
+                // Clear any pending drag over timeout
+                if (this.dragOverTimeout) {
+                    clearTimeout(this.dragOverTimeout);
+                    this.dragOverTimeout = null;
+                }
+
+                // Only clear highlights if leaving the canvas entirely
+                const rect = this.domElements.canvas.getBoundingClientRect();
+                const x = event.clientX;
+                const y = event.clientY;
+
+                if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+                    this.clearHighlights();
+                    // Reset visual feedback
+                    if (this.domElements.canvas && this.domElements.canvas.parentElement) {
+                        this.domElements.canvas.parentElement.style.borderColor = '';
+                        this.domElements.canvas.parentElement.style.boxShadow = '';
+                    }
+                }
+            },
+
+            handleCanvasDrop: function(event) {
+                event.preventDefault();
+
+                // Clear any pending drag over timeout
+                if (this.dragOverTimeout) {
+                    clearTimeout(this.dragOverTimeout);
+                    this.dragOverTimeout = null;
+                }
+
+                if (!this.gameState.isDragging || !this.gameState.draggedCard) return;
+
+                try {
+                    const draggedElementId = this.gameState.draggedCard.dataset.elementId;
+
+                    // Update raycaster for final position
+                    this.updateRaycaster(event);
+
+                    // Find intersections
+                    const intersections = this.getIntersections();
+
+                    if (intersections.length > 0) {
+                        const intersectedObject = intersections[0].object;
+
+                        // Validate intersected object
+                        if (intersectedObject && intersectedObject.userData && intersectedObject.visible) {
+                            // Check if dropped on correct target
+                            if (intersectedObject.userData.id === draggedElementId &&
+                                intersectedObject.userData.type === 'face-diagonal') {
+
+                                // Correct match!
+                                this.handleCorrectMatch(intersectedObject, draggedElementId);
+                            } else {
+                                // Incorrect match
+                                this.handleIncorrectMatch();
+                            }
+                        } else {
+                            this.handleIncorrectMatch();
+                        }
+                    } else {
+                        // Check if dropped on the last highlighted object
+                        if (this.gameState.lastIntersectedObject &&
+                            this.gameState.lastIntersectedObject.userData &&
+                            this.gameState.lastIntersectedObject.userData.id === draggedElementId &&
+                            this.gameState.lastIntersectedObject.visible) {
+                            this.handleCorrectMatch(this.gameState.lastIntersectedObject, draggedElementId);
+                        } else {
+                            // Dropped on empty space
+                            this.handleIncorrectMatch();
+                        }
+                    }
+                } catch (error) {
+                    console.warn('[Level4Game] Error handling drop:', error);
+                    this.handleIncorrectMatch();
+                }
+
+                // Clear highlights and reset drag state
+                this.clearHighlights();
+                this.gameState.isDragging = false;
+                this.gameState.draggedCard = null;
+                this.gameState.lastIntersectedObject = null;
+            },
+
+            updateRaycaster: function(event) {
+                if (!this.threeObjects.raycaster || !this.threeObjects.mouse) return;
+
+                try {
+                    // Calculate mouse/touch position in normalized device coordinates (-1 to +1)
+                    const rect = this.domElements.canvas.getBoundingClientRect();
+                    const clientX = event.clientX || (event.touches && event.touches[0] ? event.touches[0].clientX : 0);
+                    const clientY = event.clientY || (event.touches && event.touches[0] ? event.touches[0].clientY : 0);
+
+                    this.threeObjects.mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+                    this.threeObjects.mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+                    // Ensure coordinates are properly clamped for different viewport sizes
+                    this.threeObjects.mouse.x = Math.max(-1, Math.min(1, this.threeObjects.mouse.x));
+                    this.threeObjects.mouse.y = Math.max(-1, Math.min(1, this.threeObjects.mouse.y));
+
+                    // Update raycaster
+                    this.threeObjects.raycaster.setFromCamera(this.threeObjects.mouse, this.threeObjects.camera);
+
+                    // Highlight potential targets
+                    this.updateHighlights();
+                } catch (error) {
+                    console.warn('[Level4Game] Error updating raycaster:', error);
+                }
+            },
+
+            updateHighlights: function() {
+                if (!this.gameState.isDragging || !this.gameState.draggedCard) return;
+
+                try {
+                    const draggedElementId = this.gameState.draggedCard.dataset.elementId;
+
+                    // Clear previous highlights
+                    this.clearHighlights();
+
+                    // Find intersections
+                    const intersections = this.getIntersections();
+
+                    if (intersections.length > 0) {
+                        const intersectedObject = intersections[0].object;
+
+                        // Validate intersected object
+                        if (intersectedObject && intersectedObject.userData) {
+                            // Store current intersection for comparison
+                            this.gameState.lastIntersectedObject = intersectedObject;
+
+                            // Highlight if it's the correct target and visible
+                            if (intersectedObject.userData.id === draggedElementId &&
+                                intersectedObject.userData.type === 'face-diagonal' &&
+                                !intersectedObject.userData.isMatched &&
+                                intersectedObject.visible) {
+
+                                this.highlightElement(intersectedObject);
+                            }
+                        }
+                    } else {
+                        // Clear last intersected object if no intersections
+                        this.gameState.lastIntersectedObject = null;
+                    }
+                } catch (error) {
+                    console.warn('[Level4Game] Error updating highlights:', error);
+                    this.clearHighlights();
+                }
+            },
+
+            getIntersections: function() {
+                if (!this.threeObjects.raycaster) return [];
+
+                const objectsToCheck = [];
+
+                // Only check target face diagonals that are visible
+                const targetDiagonals = ['AC', 'BD'];
+                targetDiagonals.forEach(diagonalId => {
+                    if (this.threeObjects.faceDiagonals[diagonalId] && this.threeObjects.faceDiagonals[diagonalId].visible) {
+                        objectsToCheck.push(this.threeObjects.faceDiagonals[diagonalId]);
+                    }
+                });
+
+                return this.threeObjects.raycaster.intersectObjects(objectsToCheck);
+            },
+
+            highlightElement: function(element) {
+                if (element.userData.isMatched || !element.visible) return;
+
+                // Store original colors if not already stored
+                if (element.userData.originalColor === undefined) {
+                    element.userData.originalColor = element.material.color.getHex();
+                    element.material.color.setHex(element.userData.highlightColor);
+
+                    // Add subtle glow effect for edges
+                    if (element.userData.type.includes('edge') || element.userData.type.includes('diagonal')) {
+                        if (element.material.linewidth !== undefined) {
+                            element.material.linewidth = 4;
+                        }
+                    }
+                }
+            },
+
+            clearHighlights: function() {
+                // Clear highlights from face diagonals
+                Object.values(this.threeObjects.faceDiagonals).forEach(diagonal => this.clearElementHighlight(diagonal));
+
+                // Reset last intersected object
+                this.gameState.lastIntersectedObject = null;
+
+                // Reset canvas visual feedback
+                if (this.domElements.canvas && this.domElements.canvas.parentElement) {
+                    this.domElements.canvas.parentElement.style.borderColor = '';
+                    this.domElements.canvas.parentElement.style.boxShadow = '';
+                }
+            },
+
+            clearElementHighlight: function(element) {
+                if (element.userData.isMatched || !element.visible) return;
+
+                if (element.userData.originalColor !== undefined) {
+                    element.material.color.setHex(element.userData.originalColor);
+                    // Reset linewidth if it was changed
+                    if (element.material.linewidth !== undefined && element.material.linewidth > 3) {
+                        element.material.linewidth = 3;
+                    }
+
+                    // Clear stored original values
+                    delete element.userData.originalColor;
+                }
+            },
+
+            handleCorrectMatch: function(element, elementId) {
+                if (!element || !element.userData || element.userData.isMatched) return;
+
+                try {
+                    console.log('[Level4Game] Correct match:', elementId);
+
+                    // Mark as matched
+                    element.userData.isMatched = true;
+                    this.gameState.matchedElements.add(elementId);
+                    this.gameState.matchedCount++;
+
+                    // Set permanent correct color
+                    element.material.color.setHex(element.userData.correctColor);
+                    if (element.material.linewidth !== undefined) {
+                        element.material.linewidth = 3;
+                    }
+
+                    // Remove card from toolbox with animation (optimized for mobile)
+                    if (this.gameState.draggedCard) {
+                        this.gameState.draggedCard.classList.add('matched');
+                        this.gameState.draggedCard.style.transition = 'all 0.3s ease';
+                        this.gameState.draggedCard.style.opacity = '0';
+                        this.gameState.draggedCard.style.transform = 'scale(0.8) translateZ(0)';
+
+                        setTimeout(() => {
+                            if (this.gameState.draggedCard && this.gameState.draggedCard.parentNode) {
+                                this.gameState.draggedCard.remove();
+                            }
+                        }, 300);
+                    }
+
+                    // Update progress
+                    this.updateProgress();
+
+                    // Check if all elements are placed
+                    if (this.gameState.matchedCount >= 2) {
+                        this.showCompletionModal();
+                    }
+
+                    console.log('[Level4Game] Match successful, progress:', this.gameState.matchedCount + '/2');
+                } catch (error) {
+                    console.warn('[Level4Game] Error handling correct match:', error);
+                }
+            },
+
+            handleIncorrectMatch: function() {
+                try {
+                    console.log('[Level4Game] Incorrect match');
+
+                    // Visual feedback for incorrect match
+                    this.showIncorrectFeedback();
+
+                    console.log('[Level4Game] Incorrect attempt');
+                } catch (error) {
+                    console.warn('[Level4Game] Error handling incorrect match:', error);
+                }
+            },
+
+            showIncorrectFeedback: function() {
+                try {
+                    // Simple visual feedback - could be enhanced with animations
+                    if (this.domElements.canvas) {
+                        const canvas = this.domElements.canvas.parentElement;
+                        if (canvas) {
+                            canvas.style.boxShadow = 'inset 0 0 20px rgba(244, 67, 54, 0.3)';
+                            setTimeout(() => {
+                                if (canvas) {
+                                    canvas.style.boxShadow = '';
+                                }
+                            }, 500);
+                        }
+                    }
+                } catch (error) {
+                    console.warn('[Level4Game] Error showing incorrect feedback:', error);
+                }
+            },
+
+            updateProgress: function() {
+                if (this.domElements.progressStat) {
+                    this.domElements.progressStat.textContent = `${this.gameState.matchedCount}/2`;
+                }
+            },
+
+            showCompletionModal: function() {
+                if (this.domElements.completionModal) {
+                    this.domElements.completionModal.style.display = 'flex';
+                }
+                this.gameState.allPlaced = true;
+            },
+
+            continueToNext: function() {
+                if (this.domElements.completionModal) {
+                    this.domElements.completionModal.style.display = 'none';
+                }
+                // Automatically advance to Level 5
+                console.log('[Level4Game] Level 4 completed, advancing to Level 5');
+                window.location.href = 'level-5-simple.html';
+            },
+
+            resetGame: function() {
+                console.log('[Level4Game] Resetting game');
+
+                // Reset game state
+                this.gameState.matchedCount = 0;
+                this.gameState.matchedElements.clear();
+                this.gameState.allPlaced = false;
+
+                // Reset all face diagonals
+                Object.values(this.threeObjects.faceDiagonals).forEach(diagonal => {
+                    diagonal.material.color.setHex(diagonal.userData.defaultColor);
+                    diagonal.userData.isMatched = false;
+                });
+
+                // Re-render toolbox
+                this.renderToolbox();
+
+                // Reset progress
+                this.updateProgress();
+
+                console.log('[Level4Game] Game reset complete');
+            },
+
+            animate: function() {
+                try {
+                    requestAnimationFrame(this.animate.bind(this));
+
+                    // Update controls
+                    if (this.threeObjects.controls) {
+                        this.threeObjects.controls.update();
+                    }
+
+                    // Render scene
+                    if (this.threeObjects.renderer && this.threeObjects.scene && this.threeObjects.camera) {
+                        this.threeObjects.renderer.render(this.threeObjects.scene, this.threeObjects.camera);
+                    }
+                } catch (error) {
+                    console.warn('[Level4Game] Animation error:', error);
+                    // Continue animation loop even if there's an error
+                    requestAnimationFrame(this.animate.bind(this));
+                }
+            },
+
+            handleResize: function() {
+                try {
+                    if (!this.threeObjects.camera || !this.threeObjects.renderer || !this.domElements.canvas) return;
+
+                    const canvasRect = this.domElements.canvas.getBoundingClientRect();
+                    this.threeObjects.camera.aspect = canvasRect.width / canvasRect.height;
+                    this.threeObjects.camera.updateProjectionMatrix();
+                    this.threeObjects.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                    this.threeObjects.renderer.setSize(
+                        canvasRect.width,
+                        canvasRect.height
+                    );
+
+                    // Force render after resize
+                    if (this.threeObjects.renderer && this.threeObjects.scene && this.threeObjects.camera) {
+                        this.threeObjects.renderer.render(this.threeObjects.scene, this.threeObjects.camera);
+                    }
+                } catch (error) {
+                    console.warn('[Level4Game] Error handling resize:', error);
+                }
+            }
+        };
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing Level4Game');
+            window.Level4Game.init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+{
+  "name": "Game Uji Geometri 3D - Kurikulum Merdeka",
+  "short_name": "Geometri 3D",
+  "description": "Aplikasi pembelajaran interaktif geometri 3D berbasis Kurikulum Merdeka",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#FAF0E6",
+  "theme_color": "#4CAF50",
+  "orientation": "portrait-primary",
+  "categories": ["education", "game", "productivity"],
+  "lang": "id-ID",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Peta Konstruksi",
+      "short_name": "Peta",
+      "description": "Lihat peta pembelajaran Kurikulum Merdeka",
+      "url": "/peta-konstruksi.html",
+      "icons": [{ "src": "icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Lahan Bermain",
+      "short_name": "Game",
+      "description": "Mainkan tantangan geometri interaktif",
+      "url": "/lahan-bermain.html",
+      "icons": [{ "src": "icon-96.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "scope": "/",
+  "serviceworker": {
+    "src": "sw.js",
+    "scope": "/",
+    "update_via_cache": "none"
+  }
+}

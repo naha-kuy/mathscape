@@ -460,8 +460,7 @@ ol li {
 }
 
 .level-card:hover:not(.locked) {
-    transform: translate3d(0, -5px, 0);
-    will-change: transform;
+    transform: translateY(-5px);
     box-shadow: 0 8px 25px var(--color-shadow);
     border-color: var(--color-accent-orange);
 }
@@ -621,9 +620,15 @@ ol li {
     box-shadow: 0 2px 4px var(--color-shadow);
 }
 
+.game-component.is-dragging {
+    opacity: 0.5;
+    transform: rotate(5deg) scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    cursor: grabbing;
+}
+
 .game-component:hover {
-    transform: translate3d(0, -2px, 0);
-    will-change: transform;
+    transform: translateY(-2px);
     box-shadow: 0 4px 8px var(--color-shadow);
     border-color: var(--color-accent-orange);
 }
@@ -675,6 +680,25 @@ ol li {
     color: var(--color-text-light);
 }
 
+.reset-btn {
+    background-color: var(--color-accent-orange);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+}
+
+.reset-btn:hover {
+    background-color: #E65100;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+}
+
 .game-canvas-container {
     flex: 2;
     background-color: var(--color-base-creme);
@@ -709,56 +733,23 @@ ol li {
     animation: fadeIn 0.3s ease-out;
 }
 
-/* Ensure 3D canvas is always on top */
+/* Z-index management for proper layering */
 #threejs-canvas,
 #game-threejs-canvas {
-    position: relative !important;
-    z-index: 2 !important;
+    position: relative;
+    z-index: 2;
 }
 
-/* Canvas containers should be above background elements */
 .canvas-container,
 .game-canvas-container {
-    position: relative !important;
-    z-index: 1 !important;
+    position: relative;
+    z-index: 1;
 }
 
-/* Background elements should be at the bottom */
-.checkbox-panel,
-.game-toolbox,
-.text-box,
-.card,
-.level-card,
-.question,
-.options,
-.feedback,
-.progress-bar,
-.mission-card,
-.stats-panel {
-    position: relative !important;
-    z-index: 1 !important;
-}
-
-/* Interactive elements should be above backgrounds */
-.nav-btn,
-.next-btn,
-.back-btn,
-.logout-btn,
-.level-card,
-.game-component,
-.hint-btn,
-.display-mode-btn,
-.completion-btn,
-.feedback-btn {
-    position: relative !important;
-    z-index: 3 !important;
-}
-
-/* Overlays should be on top of everything */
 .overlay,
 .feedback-popup {
-    position: fixed !important;
-    z-index: 10000 !important;
+    position: fixed;
+    z-index: 10000;
 }
 
 .overlay.hidden {
@@ -840,8 +831,7 @@ ol li {
 
 .completion-btn.primary:hover {
     background-color: #388E3C;
-    transform: translate3d(0, -2px, 0);
-    will-change: transform;
+    transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
@@ -853,8 +843,7 @@ ol li {
 
 .completion-btn.secondary:hover {
     background-color: white;
-    transform: translate3d(0, -2px, 0);
-    will-change: transform;
+    transform: translateY(-2px);
     box-shadow: 0 4px 12px var(--color-shadow);
 }
 
@@ -897,9 +886,6 @@ ol li {
     to { transform: translateY(-5px); }
 }
 
-.level-card.completed .level-status {
-    animation: pulse 2s infinite;
-}
 
 /* Entrance animations for cards */
 .nav-btn:nth-child(1) { animation: entranceStagger 0.6s ease-out 0.1s both; }
@@ -910,13 +896,6 @@ ol li {
 .card:nth-child(1) { animation: entranceStagger 0.6s ease-out 0.1s both; }
 .card:nth-child(2) { animation: entranceStagger 0.6s ease-out 0.2s both; }
 .card:nth-child(3) { animation: entranceStagger 0.6s ease-out 0.3s both; }
-
-.level-card:nth-child(1) { animation: entranceStagger 0.6s ease-out 0.1s both; }
-.level-card:nth-child(2) { animation: entranceStagger 0.6s ease-out 0.2s both; }
-.level-card:nth-child(3) { animation: entranceStagger 0.6s ease-out 0.3s both; }
-.level-card:nth-child(4) { animation: entranceStagger 0.6s ease-out 0.4s both; }
-.level-card:nth-child(5) { animation: entranceStagger 0.6s ease-out 0.5s both; }
-.level-card:nth-child(6) { animation: entranceStagger 0.6s ease-out 0.6s both; }
 
 /* Feedback Messages */
 .feedback-popup {
@@ -1053,23 +1032,23 @@ ol li {
     min-width: 25px;
 }
 
-/* Force vertical stacking for petunjuk konstruksi */
+/* Petunjuk konstruksi layout */
 .petunjuk-container,
 .petunjuk-content-area,
 .container-wrapper-3d {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 20px !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
 }
 
 .checkbox-panel,
 .canvas-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
     background-color: var(--color-base-creme);
     border-radius: 15px;
     box-shadow: 0 4px 8px var(--color-shadow);
@@ -1235,7 +1214,7 @@ ol li {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
-    background-color: var(--color-base-creme) !important;
+    background-color: var(--color-base-creme);
     border-radius: 0 0 10px 10px;
     padding: 0 15px;
 }
@@ -1272,6 +1251,220 @@ ol li {
 .checkboxes input[type="checkbox"] {
     margin-right: 5px;
 }
+
+/* Kurikulum Merdeka Timeline Styles */
+.kurmer-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.phase-node {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 25px var(--color-shadow);
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.phase-node::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: linear-gradient(90deg, var(--color-primary-green), var(--color-secondary-green));
+}
+
+.phase-node.locked {
+    background: var(--color-base-creme);
+    border-color: var(--color-border-light);
+    opacity: 0.7;
+}
+
+.phase-node.unlocked {
+    border-color: var(--color-accent-orange);
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.05), rgba(76, 175, 80, 0.05));
+}
+
+.phase-node.completed {
+    border-color: var(--color-primary-green);
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(139, 195, 74, 0.1));
+}
+
+.phase-node.in-progress {
+    border-color: var(--color-secondary-green);
+    background: linear-gradient(135deg, rgba(139, 195, 74, 0.08), rgba(255, 152, 0, 0.05));
+}
+
+.phase-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.phase-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--color-primary-green);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.phase-node.locked .phase-icon {
+    background: var(--color-text-light);
+}
+
+.phase-info {
+    flex: 1;
+}
+
+.phase-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--color-text-dark);
+    margin-bottom: 5px;
+}
+
+.phase-subtitle {
+    font-size: 1rem;
+    color: var(--color-text-light);
+    margin-bottom: 8px;
+}
+
+.p5-badge {
+    display: inline-block;
+    background: var(--color-accent-orange);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.phase-description {
+    margin-bottom: 25px;
+}
+
+.phase-description p {
+    color: var(--color-text-light);
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.phase-levels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.level-item {
+    background: var(--color-base-creme);
+    border: 2px solid var(--color-border-light);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+}
+
+.level-item:hover:not(.locked) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px var(--color-shadow);
+    border-color: var(--color-accent-orange);
+}
+
+.level-item.locked {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: var(--color-border-light);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.level-item.unlocked {
+    border-color: var(--color-accent-orange);
+    background: rgba(255, 152, 0, 0.05);
+}
+
+.level-item.completed {
+    border-color: var(--color-primary-green);
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.level-icon {
+    font-size: 32px;
+    min-width: 40px;
+}
+
+.level-content {
+    flex: 1;
+}
+
+.level-name {
+    font-weight: bold;
+    color: var(--color-text-dark);
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.level-goal {
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.level-status {
+    font-size: 24px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.timeline-connector {
+    width: 4px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--color-primary-green), var(--color-accent-orange));
+    margin: 0 auto;
+    border-radius: 2px;
+    position: relative;
+}
+
+.timeline-connector::before {
+    content: '↓';
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--color-primary-green);
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Animations for timeline */
+.phase-node:nth-child(1) { animation: entranceStagger 0.8s ease-out 0.1s both; }
+.phase-node:nth-child(2) { animation: entranceStagger 0.8s ease-out 0.3s both; }
+.phase-node:nth-child(3) { animation: entranceStagger 0.8s ease-out 0.5s both; }
+
+.level-item:nth-child(1) { animation: entranceStagger 0.6s ease-out 0.1s both; }
+.level-item:nth-child(2) { animation: entranceStagger 0.6s ease-out 0.2s both; }
+.level-item:nth-child(3) { animation: entranceStagger 0.6s ease-out 0.3s both; }
+.level-item:nth-child(4) { animation: entranceStagger 0.6s ease-out 0.4s both; }
 
 /* Responsive Design */
 @media (max-width: 600px) {
@@ -1317,5 +1510,52 @@ ol li {
 
     .checkboxes {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Timeline responsive */
+    .kurmer-timeline {
+        gap: 20px;
+    }
+
+    .phase-node {
+        padding: 20px;
+    }
+
+    .phase-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .phase-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .phase-title {
+        font-size: 1.5rem;
+    }
+
+    .phase-levels {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .level-item {
+        padding: 15px;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .level-icon {
+        font-size: 28px;
+        min-width: auto;
+    }
+
+    .level-status {
+        position: static;
+        margin-top: 10px;
     }
 }

@@ -1,10 +1,23 @@
+// PWA Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+                console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
+}
+
+// Session Management - Removed
+
 // app.js - Main Application Controller (SPA Router)
 window.app = {
     currentPage: null,
 
     init: function() {
-        console.log('App initializing...');
-
         // Hide all pages initially
         document.querySelectorAll('.page').forEach(page => {
             page.classList.remove('active');
@@ -15,8 +28,6 @@ window.app = {
 
         // Setup navigation after DOM is ready
         this.setupNavigation();
-
-        console.log('App initialized');
     },
 
     setupNavigation: function() {
@@ -28,6 +39,10 @@ window.app = {
                 const pageId = btn.getAttribute('data-page');
                 if (pageId) {
                     // Special handling for separate HTML files
+                    if (pageId === 'peta-konstruksi') {
+                        window.location.href = 'peta-konstruksi.html';
+                        return;
+                    }
                     if (pageId === 'petunjuk-konstruksi') {
                         window.location.href = 'petunjuk-konstruksi.html';
                         return;
@@ -66,11 +81,17 @@ window.app = {
             if (e.target.closest('#start-construction-btn')) {
                 this.showPage('level-selection');
             }
+
+            // Handle logout button - removed
         });
     },
 
     showPage: function(pageId) {
-        console.log('Showing page:', pageId);
+        // Special handling for pages that redirect to separate HTML files
+        if (pageId === 'lahan-syarat') {
+            window.location.href = 'lahan-syarat.html';
+            return;
+        }
 
         // Clean up current page
         if (this.currentPage) {
@@ -86,7 +107,6 @@ window.app = {
         const targetPage = document.getElementById(pageId + '-page');
         if (targetPage) {
             targetPage.classList.add('active');
-            console.log('Page element found and activated:', pageId);
         } else {
             console.error('Page element not found:', pageId + '-page');
         }
@@ -99,10 +119,8 @@ window.app = {
     initPage: function(pageId) {
         // Call the appropriate page controller init function
         const controllerName = pageId.replace(/-/g, '') + 'Page'; // Convert kebab-case to camelCase
-        console.log('Initializing page controller:', controllerName);
         if (window[controllerName] && typeof window[controllerName].init === 'function') {
             window[controllerName].init();
-            console.log('Page controller initialized:', controllerName);
         } else {
             console.error('Page controller not found or init function missing:', controllerName);
         }

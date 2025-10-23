@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Konstruksi - Game Uji Geometri 3D</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Standalone Peta Konstruksi styles */
+        .standalone-peta-konstruksi {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--color-base-creme) 0%, #e8f5e8 100%);
+            padding: 20px;
+            font-family: 'Poppins', 'Quicksand', Arial, sans-serif;
+        }
+
+        .standalone-peta-konstruksi .peta-container {
+            max-width: min(1000px, 95vw);
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: clamp(15px, 3vw, 20px);
+            padding: clamp(20px, 4vw, 30px);
+            box-shadow: 0 15px 35px var(--color-shadow);
+            border: 2px solid var(--color-border-light);
+        }
+
+        .standalone-peta-konstruksi .peta-header {
+            text-align: center;
+            margin-bottom: clamp(20px, 5vw, 30px);
+            color: var(--color-text-dark);
+        }
+
+        .standalone-peta-konstruksi .peta-title {
+            font-size: clamp(2rem, 6vw, 2.5rem);
+            font-weight: bold;
+            margin-bottom: clamp(8px, 2vw, 10px);
+            background: linear-gradient(45deg, var(--color-primary-green), var(--color-secondary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .standalone-peta-konstruksi .peta-subtitle {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: var(--color-text-light);
+            margin-bottom: clamp(15px, 3vw, 20px);
+        }
+
+        .standalone-peta-konstruksi .back-to-main {
+            display: inline-block;
+            background: var(--color-primary-green);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px var(--color-shadow);
+        }
+
+        /* Home button in top-right corner */
+        .home-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .home-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .standalone-peta-konstruksi .back-to-main:hover {
+            background: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Kurikulum Merdeka Timeline Styles */
+        .kurmer-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(20px, 5vw, 30px);
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .phase-node {
+            background: white;
+            border-radius: clamp(15px, 3vw, 20px);
+            padding: clamp(20px, 4vw, 30px);
+            box-shadow: 0 8px 25px var(--color-shadow);
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phase-node::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, var(--color-primary-green), var(--color-secondary-green));
+        }
+
+        .phase-node.locked {
+            background: var(--color-base-creme);
+            border-color: var(--color-border-light);
+            opacity: 0.7;
+        }
+
+        .phase-node.unlocked {
+            border-color: var(--color-accent-orange);
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.05), rgba(76, 175, 80, 0.05));
+        }
+
+        .phase-node.completed {
+            border-color: var(--color-primary-green);
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(139, 195, 74, 0.1));
+        }
+
+        .phase-node.in-progress {
+            border-color: var(--color-secondary-green);
+            background: linear-gradient(135deg, rgba(139, 195, 74, 0.08), rgba(255, 152, 0, 0.05));
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: clamp(15px, 3vw, 20px);
+            gap: clamp(15px, 3vw, 20px);
+        }
+
+        .phase-icon {
+            width: clamp(50px, 10vw, 60px);
+            height: clamp(50px, 10vw, 60px);
+            border-radius: 50%;
+            background: var(--color-primary-green);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(20px, 4vw, 24px);
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .phase-node.locked .phase-icon {
+            background: var(--color-text-light);
+        }
+
+        .phase-info {
+            flex: 1;
+        }
+
+        .phase-title {
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
+            font-weight: bold;
+            color: var(--color-text-dark);
+            margin-bottom: clamp(3px, 1vw, 5px);
+        }
+
+        .phase-subtitle {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: var(--color-text-light);
+            margin-bottom: clamp(6px, 1.5vw, 8px);
+        }
+
+        .p5-badge {
+            display: inline-block;
+            background: var(--color-accent-orange);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .phase-description {
+            margin-bottom: clamp(20px, 4vw, 25px);
+        }
+
+        .phase-description p {
+            color: var(--color-text-light);
+            line-height: 1.6;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .phase-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(250px, 30vw, 280px), 1fr));
+            gap: clamp(12px, 2.5vw, 15px);
+        }
+
+        .level-item {
+            background: var(--color-base-creme);
+            border: 2px solid var(--color-border-light);
+            border-radius: clamp(10px, 2vw, 12px);
+            padding: clamp(15px, 3vw, 20px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: clamp(12px, 2.5vw, 15px);
+            position: relative;
+        }
+
+        .level-item:hover:not(.locked) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--color-shadow);
+            border-color: var(--color-accent-orange);
+        }
+
+        .level-item.locked {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: var(--color-border-light);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .level-item.unlocked {
+            border-color: var(--color-accent-orange);
+            background: rgba(255, 152, 0, 0.05);
+        }
+
+        .level-item.completed {
+            border-color: var(--color-primary-green);
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .level-icon {
+            font-size: clamp(28px, 6vw, 32px);
+            min-width: clamp(35px, 7vw, 40px);
+        }
+
+        .level-content {
+            flex: 1;
+        }
+
+        .level-name {
+            font-weight: bold;
+            color: var(--color-text-dark);
+            margin-bottom: clamp(3px, 1vw, 5px);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .level-goal {
+            color: var(--color-text-light);
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            line-height: 1.4;
+        }
+
+        .level-status {
+            font-size: clamp(20px, 4vw, 24px);
+            position: absolute;
+            top: clamp(12px, 2.5vw, 15px);
+            right: clamp(12px, 2.5vw, 15px);
+        }
+
+        .timeline-connector {
+            width: clamp(3px, 0.8vw, 4px);
+            height: clamp(30px, 8vw, 40px);
+            background: linear-gradient(to bottom, var(--color-primary-green), var(--color-accent-orange));
+            margin: 0 auto;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .timeline-connector::before {
+            content: '↓';
+            position: absolute;
+            bottom: clamp(-20px, -5vw, -25px);
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--color-primary-green);
+            font-size: clamp(16px, 4vw, 20px);
+            font-weight: bold;
+        }
+
+        /* Animations for timeline */
+        .phase-node:nth-child(1) { animation: entranceStagger 0.8s ease-out 0.1s both; }
+        .phase-node:nth-child(2) { animation: entranceStagger 0.8s ease-out 0.3s both; }
+        .phase-node:nth-child(3) { animation: entranceStagger 0.8s ease-out 0.5s both; }
+
+        .level-item:nth-child(1) { animation: entranceStagger 0.6s ease-out 0.1s both; }
+        .level-item:nth-child(2) { animation: entranceStagger 0.6s ease-out 0.2s both; }
+        .level-item:nth-child(3) { animation: entranceStagger 0.6s ease-out 0.3s both; }
+        .level-item:nth-child(4) { animation: entranceStagger 0.6s ease-out 0.4s both; }
+
+        @media (max-width: 768px) {
+            .standalone-peta-konstruksi {
+                padding: 15px;
+            }
+
+            .standalone-peta-konstruksi .peta-container {
+                padding: 20px;
+            }
+
+            .standalone-peta-konstruksi .peta-title {
+                font-size: 2rem;
+            }
+
+            .kurmer-timeline {
+                gap: 20px;
+            }
+
+            .phase-node {
+                padding: 20px;
+            }
+
+            .phase-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .phase-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            .phase-title {
+                font-size: 1.5rem;
+            }
+
+            .phase-levels {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .level-item {
+                padding: 15px;
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .level-icon {
+                font-size: 28px;
+                min-width: auto;
+            }
+
+            .level-status {
+                position: static;
+                margin-top: 10px;
+            }
+        }
+
+        /* Additional mobile optimizations for vertical layout */
+        @media (max-width: 480px) {
+            .kurmer-timeline {
+                gap: 15px;
+            }
+
+            .phase-node {
+                padding: 15px;
+            }
+
+            .phase-levels {
+                gap: 10px;
+            }
+
+            .level-item {
+                padding: 12px;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="standalone-peta-konstruksi">
+        <a href="index.html" class="home-button" title="Kembali ke Home">🏠</a>
+        <div class="peta-container">
+            <div class="peta-header">
+                <a href="index.html" class="back-to-main">← Kembali ke Menu Utama</a>
+                <h1 class="peta-title">Peta Konstruksi</h1>
+                <p class="peta-subtitle">Alur Pembelajaran Berbasis Kurikulum Merdeka</p>
+            </div>
+
+            <div id="timeline-container">
+                <!-- Timeline will be rendered here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Standalone Peta Konstruksi Controller
+        const PetaKonstruksiStandalone = {
+            // Hierarchical data structure for Kurikulum Merdeka phases
+            PetaKurmerData: [
+                {
+                    missionId: 'Fase_1_Eksplorasi',
+                    title: 'Fase 1: Eksplorasi Diri & Konsep',
+                    subtitle: '(CP Geometri)',
+                    p5_focus: 'Bernalar Kritis',
+                    description: 'Mengetahui beberapa sifat dan unsur dari bangun ruang balok.',
+                    color: 'var(--color-primary-green)',
+                    levels: [
+                        {
+                            id: 'L1',
+                            name: 'Mengenal Balok',
+                            type: 'SYARAT',
+                            goal: 'Mengetahui Definisi',
+                            unlocks: 'L2',
+                            status: 'unlocked'
+                        },
+                        {
+                            id: 'L2',
+                            name: 'Visualisasi Elemen',
+                            type: 'PETUNJUK',
+                            goal: 'Mengidentifikasi Titik, Garis, Bidang bangun ruang',
+                            unlocks: 'Fase_2',
+                            status: 'unlocked'
+                        }
+                    ]
+                },
+                {
+                    missionId: 'Fase_2_Tantangan',
+                    title: 'Fase 2: Tantangan Kreatif & Aplikasi',
+                    subtitle: '(CP Geometri)',
+                    p5_focus: 'Kreatif & Mandiri',
+                    description: 'Menerapkan pengetahuan tentang unsur-unsur bangun ruang balok untuk eksplorasi interaktif 3D.',
+                    color: 'var(--color-secondary-green)',
+                    levels: [
+                        {
+                            id: 'L3',
+                            name: 'Titik Sudut Lantai',
+                            type: 'BERMAIN',
+                            goal: 'Temukan semua titik sudut pada lantai balok',
+                            unlocks: 'L4',
+                            status: 'unlocked'
+                        },
+                        {
+                            id: 'L4',
+                            name: 'Rusuk Tegak',
+                            type: 'BERMAIN',
+                            goal: 'Temukan semua rusuk tegak pada balok',
+                            unlocks: 'L5',
+                            status: 'unlocked'
+                        },
+                        {
+                            id: 'L5',
+                            name: 'Bidang Sisi Tegak',
+                            type: 'BERMAIN',
+                            goal: 'Temukan semua bidang sisi tegak pada balok',
+                            unlocks: 'L6',
+                            status: 'unlocked'
+                        },
+                        {
+                            id: 'L6',
+                            name: 'Diagonal Bidang Alas',
+                            type: 'BERMAIN',
+                            goal: 'Temukan semua diagonal bidang alas pada balok',
+                            unlocks: 'L7',
+                            status: 'unlocked'
+                        },
+                        {
+                            id: 'L7',
+                            name: 'Diagonal Ruang',
+                            type: 'BERMAIN',
+                            goal: 'Temukan semua diagonal ruang pada balok',
+                            unlocks: 'L8',
+                            status: 'unlocked'
+                        },
+                        {
+                            id: 'L8',
+                            name: 'Bidang Diagonal Balok',
+                            type: 'BERMAIN',
+                            goal: 'Temukan semua bidang diagonal pada balok',
+                            unlocks: 'Fase_3',
+                            status: 'unlocked'
+                        }
+                    ]
+                },
+                {
+                    missionId: 'Fase_3_Proyek',
+                    title: 'Fase 3: Proyek & Refleksi',
+                    subtitle: '(CP Geometri)',
+                    p5_focus: 'Gotong Royong',
+                    description: 'Mengintegrasikan semua pengetahuan tentang bangun ruang balok untuk proyek akhir dan refleksi pembelajaran.',
+                    color: 'var(--color-accent-orange)',
+                    levels: [
+                        {
+                            id: 'L7',
+                            name: 'Proyek Akhir',
+                            type: 'PROYEK',
+                            goal: 'Menyelesaikan Proyek Balok 3D',
+                            unlocks: null,
+                            status: 'locked'
+                        }
+                    ]
+                }
+            ],
+
+            init: function() {
+                console.log('Initializing Standalone Peta Konstruksi');
+                this.loadProgress();
+                this.renderTimeline();
+                this.setupEventListeners();
+            },
+
+            loadProgress: function() {
+                // Load completion status from localStorage
+                const progress = JSON.parse(localStorage.getItem('petaKonstruksiProgress') || '{}');
+
+                // Update level statuses based on progress
+                this.PetaKurmerData.forEach(phase => {
+                    phase.levels.forEach(level => {
+                        if (progress[level.id]) {
+                            level.status = progress[level.id];
+                        }
+                    });
+                });
+
+                // Apply strict locking logic
+                this.applyLockingLogic();
+            },
+
+            applyLockingLogic: function() {
+                // Phase 1: L1 and L2 always unlocked
+                this.PetaKurmerData[0].levels.forEach(level => {
+                    if (level.status === 'locked') {
+                        level.status = 'unlocked';
+                    }
+                });
+
+                // Phase 2: All levels unlocked (no sequential locking)
+                this.PetaKurmerData[1].levels.forEach(level => {
+                    if (level.status === 'locked') {
+                        level.status = 'unlocked';
+                    }
+                });
+
+                // Phase 3: Locked until Phase 2 is completed
+                const phase2Completed = this.PetaKurmerData[1].levels.every(level => level.status === 'completed');
+                if (phase2Completed) {
+                    this.PetaKurmerData[2].levels.forEach(level => {
+                        if (level.status === 'locked') {
+                            level.status = 'unlocked';
+                        }
+                    });
+                }
+            },
+
+            getLevelStatus: function(levelId) {
+                for (const phase of this.PetaKurmerData) {
+                    const level = phase.levels.find(l => l.id === levelId);
+                    if (level) return level.status;
+                }
+                return 'locked';
+            },
+
+            setLevelStatus: function(levelId, status) {
+                for (const phase of this.PetaKurmerData) {
+                    const level = phase.levels.find(l => l.id === levelId);
+                    if (level) {
+                        level.status = status;
+                        this.saveProgress();
+                        return;
+                    }
+                }
+            },
+
+            saveProgress: function() {
+                const progress = {};
+                this.PetaKurmerData.forEach(phase => {
+                    phase.levels.forEach(level => {
+                        progress[level.id] = level.status;
+                    });
+                });
+                localStorage.setItem('petaKonstruksiProgress', JSON.stringify(progress));
+            },
+
+            renderTimeline: function() {
+                const container = document.getElementById('timeline-container');
+                if (!container) return;
+
+                let html = '<div class="kurmer-timeline">';
+
+                this.PetaKurmerData.forEach((phase, phaseIndex) => {
+                    // Phase node
+                    html += `
+                        <div class="phase-node ${this.getPhaseStatus(phase)}" data-phase="${phase.missionId}">
+                            <div class="phase-header">
+                                <div class="phase-icon">${phaseIndex + 1}</div>
+                                <div class="phase-info">
+                                    <h3 class="phase-title">${phase.title}</h3>
+                                    <p class="phase-subtitle">${phase.subtitle}</p>
+                                    <span class="p5-badge">${phase.p5_focus}</span>
+                                </div>
+                            </div>
+                            <div class="phase-description">
+                                <p>${phase.description}</p>
+                            </div>
+                            <div class="phase-levels">
+                    `;
+
+                    phase.levels.forEach(level => {
+                        html += `
+                            <div class="level-item ${level.status}" data-level="${level.id}" data-type="${level.type}">
+                                <div class="level-icon">${this.getLevelIcon(level.type)}</div>
+                                <div class="level-content">
+                                    <h4 class="level-name">${level.name}</h4>
+                                    <p class="level-goal">${level.goal}</p>
+                                </div>
+                                <div class="level-status">${this.getStatusIcon(level.status)}</div>
+                            </div>
+                        `;
+                    });
+
+                    html += `
+                            </div>
+                        </div>
+                    `;
+
+                    // Timeline connector (except for last phase)
+                    if (phaseIndex < this.PetaKurmerData.length - 1) {
+                        html += '<div class="timeline-connector"></div>';
+                    }
+                });
+
+                html += '</div>';
+                container.innerHTML = html;
+            },
+
+            getPhaseStatus: function(phase) {
+                const completed = phase.levels.filter(l => l.status === 'completed').length;
+                const total = phase.levels.length;
+
+                if (completed === total) return 'completed';
+                if (completed > 0) return 'in-progress';
+                if (phase.levels.some(l => l.status === 'unlocked')) return 'unlocked';
+                return 'locked';
+            },
+
+            getLevelIcon: function(type) {
+                switch (type) {
+                    case 'SYARAT': return '📋';
+                    case 'PETUNJUK': return '📖';
+                    case 'BERMAIN': return '🎮';
+                    case 'PROYEK': return '🏆';
+                    default: return '🎯';
+                }
+            },
+
+            getStatusIcon: function(status) {
+                switch (status) {
+                    case 'completed': return '✅';
+                    case 'unlocked': return '🔓';
+                    case 'locked': return '🔒';
+                    default: return '⏳';
+                }
+            },
+
+            setupEventListeners: function() {
+                const container = document.getElementById('timeline-container');
+
+                container.addEventListener('click', (e) => {
+                    const levelItem = e.target.closest('.level-item');
+                    if (levelItem) {
+                        const levelId = levelItem.getAttribute('data-level');
+                        const levelType = levelItem.getAttribute('data-type');
+
+                        // All levels are now accessible
+                        this.navigateToLevel(levelType, levelId);
+                    }
+                });
+            },
+
+            navigateToLevel: function(type, levelId) {
+                console.log(`Navigating to ${type} level: ${levelId}`);
+
+                switch (type) {
+                    case 'SYARAT':
+                        window.location.href = 'lahan-syarat.html';
+                        break;
+                    case 'PETUNJUK':
+                        window.location.href = 'petunjuk-konstruksi.html';
+                        break;
+                    case 'BERMAIN':
+                        // Navigate to specific level files
+                        this.navigateToGameLevel(levelId);
+                        break;
+                    case 'PROYEK':
+                        // Navigate to proyek page (if exists)
+                        console.log('Proyek navigation not implemented yet');
+                        alert('Fitur Proyek sedang dalam pengembangan');
+                        break;
+                }
+            },
+
+            navigateToGameLevel: function(levelId) {
+                const levelMap = {
+                    'L3': 'level-1-simple.html', // Titik Sudut Lantai
+                    'L4': 'level-2-simple.html', // Rusuk Tegak
+                    'L5': 'level-3-simple.html', // Bidang Sisi Tegak
+                    'L6': 'level-4-simple.html', // Diagonal Bidang Alas
+                    'L7': 'level-5-simple.html', // Diagonal Ruang
+                    'L8': 'level-6-simple.html'  // Bidang Diagonal Balok
+                };
+
+                const targetFile = levelMap[levelId];
+                if (targetFile) {
+                    console.log(`Navigating to game level: ${targetFile}`);
+                    window.location.href = targetFile;
+                } else {
+                    console.error(`No file mapping found for level: ${levelId}`);
+                }
+            },
+
+            showLockedMessage: function() {
+                // No longer needed since all levels are unlocked
+            },
+
+            // Public method to mark level as completed (called from other pages)
+            completeLevel: function(levelId) {
+                this.setLevelStatus(levelId, 'completed');
+                this.applyLockingLogic();
+                this.renderTimeline();
+            }
+        };
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            PetaKonstruksiStandalone.init();
+        });
+    </script>
+</body>
+</html>

@@ -5,16 +5,16 @@ window.threeJSManager = {
     initScene: function(canvasId, options = {}) {
         console.log('Initializing Three.js scene for canvas:', canvasId);
 
-        // Check if THREE is available
+        // Check if THREE is available, with fallback loading
         if (typeof THREE === 'undefined') {
-            console.error('THREE.js is not loaded. Make sure three.min.js is included before shared-three.js');
-            return null;
+            console.warn('THREE.js is not loaded. Attempting dynamic loading...');
+            return this.loadThreeJS().then(() => this.initScene(canvasId, options));
         }
 
-        // Check if OrbitControls is available
+        // Check if OrbitControls is available, with fallback loading
         if (typeof OrbitControls === 'undefined') {
-            console.error('OrbitControls is not loaded. Make sure OrbitControls.js is included before shared-three.js');
-            return null;
+            console.warn('OrbitControls is not loaded. Attempting dynamic loading...');
+            return this.loadOrbitControls().then(() => this.initScene(canvasId, options));
         }
 
         // Clean up existing scene for this canvas
@@ -49,14 +49,22 @@ window.threeJSManager = {
         );
         sceneData.camera.position.copy(options.cameraPosition || new THREE.Vector3(5, 5, 5));
 
-        // Renderer
+        // Renderer with mobile optimizations
+        const pixelRatio = this._isMobileDevice() ? Math.min(window.devicePixelRatio || 1, 2) : (window.devicePixelRatio || 1);
         sceneData.renderer = new THREE.WebGLRenderer({
             canvas: canvas,
-            antialias: options.antialias !== false,
-            alpha: options.alpha || false
+            antialias: options.antialias !== false && !this._isMobileDevice(), // Disable antialiasing on mobile for performance
+            alpha: options.alpha || false,
+            powerPreference: this._isMobileDevice() ? "low-power" : "high-performance" // Battery optimization for mobile
         });
-        sceneData.renderer.setPixelRatio(window.devicePixelRatio || 1);
+        sceneData.renderer.setPixelRatio(pixelRatio);
         sceneData.renderer.setSize(size.width, size.height, false);
+
+        // Mobile-specific renderer optimizations
+        if (this._isMobileDevice()) {
+            sceneData.renderer.shadowMap.enabled = false; // Disable shadows for performance
+            sceneData.renderer.outputEncoding = THREE.sRGBEncoding; // Better color accuracy
+        }
 
         // Ensure renderer.domElement is properly attached to DOM
         if (!canvas.parentElement) {
@@ -71,6 +79,15 @@ window.threeJSManager = {
             if (sceneData.controls.enableDamping) {
                 sceneData.controls.enableDamping = true;
                 sceneData.controls.dampingFactor = options.dampingFactor || 0.05;
+            }
+
+            // Mobile touch optimizations
+            if (this._isMobileDevice()) {
+                sceneData.controls.rotateSpeed *= 0.7; // Reduce rotation speed for mobile
+                sceneData.controls.panSpeed *= 0.8; // Reduce pan speed for mobile
+                sceneData.controls.zoomSpeed *= 0.8; // Reduce zoom speed for mobile
+                sceneData.controls.enableDamping = true; // Ensure damping is enabled for smoother mobile experience
+                sceneData.controls.dampingFactor = 0.08; // Slightly higher damping for mobile
             }
         }
 
@@ -88,9 +105,20 @@ window.threeJSManager = {
         directionalLight.position.copy(options.directionalPosition || new THREE.Vector3(1, 1, 1));
         sceneData.scene.add(directionalLight);
 
-        // Animation loop
-        const animate = () => {
+        // Animation loop with mobile optimizations
+        let lastTime = 0;
+        const targetFPS = this._isMobileDevice() ? 30 : 60; // Reduce FPS on mobile for battery life
+        const frameInterval = 1000 / targetFPS;
+
+        const animate = (currentTime) => {
             sceneData.animationId = requestAnimationFrame(animate);
+
+            // Throttle animation on mobile
+            if (this._isMobileDevice() && currentTime - lastTime < frameInterval) {
+                return;
+            }
+            lastTime = currentTime;
+
             if (sceneData.controls && typeof sceneData.controls.update === 'function') {
                 sceneData.controls.update();
             }
@@ -182,7 +210,63 @@ window.threeJSManager = {
         sceneData.camera.aspect = size.width / size.height;
         sceneData.camera.updateProjectionMatrix();
 
-        sceneData.renderer.setPixelRatio(window.devicePixelRatio || 1);
+        // Optimize pixel ratio for mobile
+        const pixelRatio = this._isMobileDevice() ? Math.min(window.devicePixelRatio || 1, 2) : (window.devicePixelRatio || 1);
+        sceneData.renderer.setPixelRatio(pixelRatio);
         sceneData.renderer.setSize(size.width, size.height, false);
+    },
+
+    loadThreeJS: function() {
+        return new Promise((resolve, reject) => {
+            if (typeof THREE !== 'undefined') {
+                resolve();
+                return;
+            }
+
+            console.log('Dynamically loading Three.js...');
+
+            const script = document.createElement('script');
+            script.src = 'three.min.js';
+            script.onload = () => {
+                console.log('Three.js loaded successfully');
+                resolve();
+            };
+            script.onerror = () => {
+                console.error('Failed to load Three.js');
+                reject(new Error('Failed to load Three.js'));
+            };
+
+            document.head.appendChild(script);
+        });
+    },
+
+    _isMobileDevice: function() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+               window.innerWidth <= 768 ||
+               ('ontouchstart' in window);
+    },
+
+    loadOrbitControls: function() {
+        return new Promise((resolve, reject) => {
+            if (typeof OrbitControls !== 'undefined') {
+                resolve();
+                return;
+            }
+
+            console.log('Dynamically loading OrbitControls...');
+
+            const script = document.createElement('script');
+            script.src = 'OrbitControls.js';
+            script.onload = () => {
+                console.log('OrbitControls loaded successfully');
+                resolve();
+            };
+            script.onerror = () => {
+                console.error('Failed to load OrbitControls');
+                reject(new Error('Failed to load OrbitControls'));
+            };
+
+            document.head.appendChild(script);
+        });
     }
 };
